@@ -1,5 +1,8 @@
 ﻿using Contracts;
+using Entities;
 using LoggerService;
+using Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace Project315.Extensions
 {
@@ -26,6 +29,18 @@ namespace Project315.Extensions
         public static void ConfigureLoggerService(this IServiceCollection services)
         {
             services.AddSingleton<ILoggerManager, LoggerManager>();
+        }
+        public static void ConfigureRepositoryWrapper(this IServiceCollection services)
+        {
+            services.AddScoped<IRepositoryWrapper, RepositoryWrapper>();
+        }
+
+        public static void ConfigureMySqlContext(this IServiceCollection services, IConfiguration config)
+        {
+            var connectionString = config["mysqlconnection:connectionString"];
+
+            services.AddDbContext<RepositoryContext>(o => o.UseMySql(connectionString,
+            MySqlServerVersion.LatestSupportedServerVersion,b=>b.MigrationsAssembly("Project315")));
         }
     }
 }

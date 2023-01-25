@@ -11,9 +11,11 @@ namespace Entities.Models
     [Table("categoria")]
     public class Categoria
     {
-        public Guid CategoriaId { get; set; }
+        [Column("CategoriaId")]
+        public Guid Id { get; set; }
         [Required(ErrorMessage = "Nombre es requerido")]
         [StringLength(60, ErrorMessage = "El nombre no puede contener mas de 60 caracteres")]
         public string? Name { get; set; }
+        public ICollection<Producto>? Productos { get; set; }
     }
 }

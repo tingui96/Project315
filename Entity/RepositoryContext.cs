@@ -11,6 +11,8 @@ namespace Entities
         }
         public DbSet<Categoria>? Categorias { get; set; }
         public DbSet<Producto>? Productos { get; set; }
+        public DbSet<Pedido>? Pedidos { get; set; }
+        public DbSet<ShoppyCar>? shoppyCars { get; set; }
 
     }
 }
