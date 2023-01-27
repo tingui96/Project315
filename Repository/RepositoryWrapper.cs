@@ -13,6 +13,7 @@ namespace Repository
         private RepositoryContext _repoContext;
         private ICategoriaRepository _categoria;
         private IProductoRepository _producto;
+        private IShoppyCarRepository _shoppyCar;
 
         public RepositoryWrapper(RepositoryContext repositoryContext)
         {
@@ -37,6 +38,17 @@ namespace Repository
                 return _producto;
             }
         }
+
+        public IShoppyCarRepository ShoppyCar
+        { 
+            get 
+            {
+                if(_shoppyCar== null)
+                    _shoppyCar = new ShoppyCarRepository(_repoContext);
+                return _shoppyCar;
+            }
+        }
+
         public void Save()
         {
             _repoContext.SaveChanges();

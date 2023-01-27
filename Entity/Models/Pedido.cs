@@ -30,7 +30,9 @@ namespace Entities.Models
         public Guid ProductoId { get; set; }
         public Producto? Producto { get; set; }
 
-
+        [ForeignKey(nameof(ShoppyCar))]
+        public Guid ShoppyCarId { get; set; }
+        public ShoppyCar? ShoppyCar { get; set; }
 
     }
 }

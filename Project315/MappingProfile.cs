@@ -13,7 +13,7 @@ namespace Project315
             CreateMap<CategoriaForCreationDTO, Categoria>();
             CreateMap<CategoriaForUpdateDTO, Categoria>();
             CreateMap<Producto, ProductoDTO>();
-            CreateMap<ProductoForCreationDTO,Producto>();
+            CreateMap<PedidoForCreationDTO,Producto>();
         }
     }
 }

@@ -165,7 +165,7 @@ namespace Project315.Controllers
 
                 if (categoria == null)
                 {
-                    _logger.LogError($"Owner with id: {id}, hasn't been found in db.");
+                    _logger.LogError($"Categoria with id: {id}, hasn't been found in db.");
                     return NotFound();
                 }
                 else
@@ -178,7 +178,7 @@ namespace Project315.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong inside GetOwnerWithDetails action: {ex.Message}");
+                _logger.LogError($"Something went wrong inside GetCategoriaWithDetails action: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }

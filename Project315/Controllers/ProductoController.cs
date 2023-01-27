@@ -65,7 +65,7 @@ namespace Project315.Controllers
             }
         }
         [HttpPost]
-        public IActionResult CreateProducto([FromBody] ProductoForCreationDTO producto)
+        public IActionResult CreateProducto([FromBody] PedidoForCreationDTO producto)
         {
             try
             {
