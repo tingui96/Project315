@@ -11,6 +11,7 @@ namespace Entities.DataTransferObject
     {       
         public Guid Id { get; set; }  
         public DateTime Created { get; set; }
+        public string? Status { get; set; }
         public IEnumerable<PedidoDTO>? Pedidos { get; set; }  
         public double Total { get; set; }
     }

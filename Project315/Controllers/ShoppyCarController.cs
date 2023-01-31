@@ -112,6 +112,43 @@ namespace Project315.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+        [HttpPut("{id}")]
+        public IActionResult UpdateShoppyCar(Guid id, [FromBody] ShoppyCarForUpdateDTO shoppyCar)
+        {
+            try
+            {
+                if (shoppyCar is null)
+                {
+                    _logger.LogError("ShoppyCar object sent from client is null.");
+                    return BadRequest("ShoppyCar object is null");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogError("Invalid shoppyCar object sent from client.");
+                    return BadRequest("Invalid model object");
+                }
+
+                var shoppyCarEntity = _repository.ShoppyCar.GetShoppyCarById(id);
+                if (shoppyCarEntity is null)
+                {
+                    _logger.LogError($"ShoppyCar with id: {id}, hasn't been found in db.");
+                    return NotFound();
+                }
+
+                _mapper.Map(shoppyCar, shoppyCarEntity);
+
+                _repository.ShoppyCar.UpdateShoppyCar(shoppyCarEntity);
+                _repository.Save();
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside UpdateShoppyCar action: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
+        }
 
     }
 }

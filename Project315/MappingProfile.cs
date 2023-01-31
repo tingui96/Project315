@@ -12,8 +12,20 @@ namespace Project315
             CreateMap<Categoria,CategoriaWithProductDTO>();
             CreateMap<CategoriaForCreationDTO, Categoria>();
             CreateMap<CategoriaForUpdateDTO, Categoria>();
+            //Producto
             CreateMap<Producto, ProductoDTO>();
-            CreateMap<PedidoForCreationDTO,Producto>();
+            CreateMap<ProductoForCreationDTO,Producto>();
+            CreateMap<ProductoForUpdateDTO,Producto>();
+            //Pedido
+            CreateMap<Pedido, PedidoDTO>();
+            CreateMap<PedidoForCreationDTO, Pedido>();
+            CreateMap<PedidoForUpdateDTO, Pedido>();
+            CreateMap<Pedido,PedidoWithProductDTO>();
+            //ShoppyCar
+            CreateMap<ShoppyCar, ShoppyCarDTO>();
+            CreateMap<ShoppyCar, ShoppyCarWithDetailDTO>();
+
+            
         }
     }
 }

@@ -1,6 +1,7 @@
 using Project315.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using NLog;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,7 @@ builder.Services.ConfigureIISIntegration();
 builder.Services.ConfigureLoggerService();
 builder.Services.ConfigureRepositoryWrapper();
 builder.Services.ConfigureMySqlContext(builder.Configuration);
+builder.Services.ConfigureJwt(builder.Configuration);
 //
 builder.Services.AddAutoMapper(typeof(Program));
 //
@@ -39,6 +41,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 });
 app.UseCors("CorsPolicy");
 //
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

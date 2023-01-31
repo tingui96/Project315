@@ -15,6 +15,8 @@ namespace Entities.Models
         public Guid Id { get; set; }
         [Required]
         public DateTime Created { get; set; }
+        public enum Status { Creado, Pagado }
+        public Status Estado { get; set; }
         public ICollection<Pedido>? Pedidos { get; set; }
         public double Total
         {

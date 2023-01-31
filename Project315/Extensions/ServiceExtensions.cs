@@ -3,6 +3,7 @@ using Entities;
 using LoggerService;
 using Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Project315.Extensions
 {
@@ -42,5 +43,18 @@ namespace Project315.Extensions
             services.AddDbContext<RepositoryContext>(o => o.UseMySql(connectionString,
             MySqlServerVersion.LatestSupportedServerVersion,b=>b.MigrationsAssembly("Project315")));
         }
+
+        public static void ConfigureJwt(this IServiceCollection services, IConfiguration config)
+        {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+
+                };
+                
+            });
+        }
+       
     }
 }

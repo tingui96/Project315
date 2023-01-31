@@ -14,6 +14,7 @@ namespace Repository
         private ICategoriaRepository _categoria;
         private IProductoRepository _producto;
         private IShoppyCarRepository _shoppyCar;
+        private IPedidoRepository _pedido;
 
         public RepositoryWrapper(RepositoryContext repositoryContext)
         {
@@ -46,6 +47,16 @@ namespace Repository
                 if(_shoppyCar== null)
                     _shoppyCar = new ShoppyCarRepository(_repoContext);
                 return _shoppyCar;
+            }
+        }
+
+        public IPedidoRepository Pedido
+        {
+            get
+            {
+                if(_pedido==null)
+                    _pedido = new PedidoRepository(_repoContext);
+                return _pedido;
             }
         }
 

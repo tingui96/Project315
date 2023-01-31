@@ -27,7 +27,7 @@ namespace Project315.Controllers
             try
             {
                 var productos = _repository.Producto.GetAllProducto();
-                _logger.LogInfo($"Returned all category from database.");
+                _logger.LogInfo($"Returned all productos from database.");
                 var productosResult = _mapper.Map<IEnumerable<ProductoDTO>>(productos);
                 return Ok(productosResult);
             }
@@ -65,7 +65,7 @@ namespace Project315.Controllers
             }
         }
         [HttpPost]
-        public IActionResult CreateProducto([FromBody] PedidoForCreationDTO producto)
+        public IActionResult CreateProducto([FromBody] ProductoForCreationDTO producto)
         {
             try
             {

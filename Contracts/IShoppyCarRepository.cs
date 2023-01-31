@@ -15,5 +15,7 @@ namespace Contracts
         void UpdateShoppyCar(ShoppyCar shoppyCar);
         void DeleteShoppyCar(ShoppyCar shoppyCar);
         ShoppyCar GetShoppyCarWithDetails(Guid shoppyCarId);
+
+
     }
 }

@@ -11,6 +11,7 @@ namespace Contracts
         ICategoriaRepository Categoria { get; }
         IProductoRepository Producto { get; }
         IShoppyCarRepository ShoppyCar { get; }
+        IPedidoRepository Pedido { get; }
         void Save();
     }
 }
