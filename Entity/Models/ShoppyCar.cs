@@ -28,5 +28,9 @@ namespace Entities.Models
                     return Pedidos.Sum(obj => obj.Total);
             }
         }
+        [Required]
+        [ForeignKey(nameof(User))]
+        public Guid UserId { get; set; }
+        public User? User { get; set; }
     }
 }

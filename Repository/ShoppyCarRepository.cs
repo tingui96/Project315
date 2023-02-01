@@ -35,10 +35,8 @@ namespace Repository
         }
         public ShoppyCar GetShoppyCarById(Guid shoppyCarId)
         {
-#pragma warning disable CS8603 // Possible null reference return.
             return FindByCondition(shoppyCar => shoppyCar.Id.Equals(shoppyCarId))
                     .FirstOrDefault();
-#pragma warning restore CS8603 // Possible null reference return.
         }
 
         public void DeleteShoppyCar(ShoppyCar shoppyCar)
@@ -47,11 +45,9 @@ namespace Repository
         }
         public ShoppyCar GetShoppyCarWithDetails(Guid shoppyCarId)
         {
-#pragma warning disable CS8603 // Possible null reference return.
             return FindByCondition(shoppyCar => shoppyCar.Id.Equals(shoppyCarId))
                 .Include(ac => ac.Pedidos)
                 .FirstOrDefault();
-#pragma warning restore CS8603 // Possible null reference return.
         }
     }
 }

@@ -12,6 +12,7 @@ namespace Contracts
         IProductoRepository Producto { get; }
         IShoppyCarRepository ShoppyCar { get; }
         IPedidoRepository Pedido { get; }
+        IUserRepository User { get; }
         void Save();
     }
 }

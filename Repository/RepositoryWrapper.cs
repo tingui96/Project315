@@ -15,6 +15,7 @@ namespace Repository
         private IProductoRepository _producto;
         private IShoppyCarRepository _shoppyCar;
         private IPedidoRepository _pedido;
+        private IUserRepository _user;
 
         public RepositoryWrapper(RepositoryContext repositoryContext)
         {
@@ -57,6 +58,16 @@ namespace Repository
                 if(_pedido==null)
                     _pedido = new PedidoRepository(_repoContext);
                 return _pedido;
+            }
+        }
+
+        public IUserRepository User
+        {
+            get
+            {
+                if (_user == null)
+                    _user = new UserRepository(_repoContext);
+                return _user;
             }
         }
 
