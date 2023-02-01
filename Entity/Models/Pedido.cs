@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Entities.Models
 {
     [Table("pedido")]
-    public class Pedido
+    public class Pedido:IEntity
     {
         [Column("PedidoId")]
         public Guid Id { get; set; }

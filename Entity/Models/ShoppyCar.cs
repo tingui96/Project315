@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Entities.Models
 {
     [Table("shoppycar")]
-    public class ShoppyCar
+    public class ShoppyCar:IEntity
     {
         [Column("ShoppyCarId")]
         public Guid Id { get; set; }

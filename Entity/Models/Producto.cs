@@ -10,7 +10,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Entities.Models
 {
     [Table("producto")]
-    public class Producto
+    public class Producto:IEntity
     {
         [Column("ProductoId")]
         public Guid Id { get; set; }

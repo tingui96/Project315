@@ -2,6 +2,8 @@ using Project315.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using NLog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Project315.ActionFilters;
+using Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,7 @@ builder.Services.ConfigureMySqlContext(builder.Configuration);
 builder.Services.ConfigureJwt(builder.Configuration);
 //
 builder.Services.AddAutoMapper(typeof(Program));
+//builder.Services.ConfigureValidation();
 //
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -23,6 +26,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Entities.Models
 {
     [Table("categoria")]
-    public class Categoria
+    public class Categoria:IEntity
     {
         [Column("CategoriaId")]
         public Guid Id { get; set; }
