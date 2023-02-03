@@ -3,6 +3,7 @@ using Contracts;
 using Entities.Auth;
 using Entities.DataTransferObject;
 using Entities.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -15,6 +16,7 @@ namespace Project315.Controllers
 {
     [Route("api/auth")]
     [ApiController]
+    [Authorize]
     public class AuthController : ControllerBase
     {
         private IAuthRepository _repository;
@@ -26,7 +28,7 @@ namespace Project315.Controllers
             _mapper = mapper;
             _configuration = configuration;
         }
-        [HttpPost("register")]
+        [HttpPost("register"),AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             if (!ModelState.IsValid)
@@ -42,7 +44,7 @@ namespace Project315.Controllers
             return Ok();
         }
         
-        [HttpPost("login")]
+        [HttpPost("login"),AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             var user = await _repository.Login(model);
@@ -53,16 +55,7 @@ namespace Project315.Controllers
             return await BuildToken(user);
 
         }
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(Guid id)
-        {
-            var result = await _repository.DeleteUser(id.ToString());
-            if (!result.Succeeded)
-            {
-                return GetErrorResult(result);
-            }
-            return Ok(result);
-        }
+        
         [HttpGet("{rol}")]
         public async Task<IActionResult> GetUserInRole(string rol)
         {
@@ -88,25 +81,6 @@ namespace Project315.Controllers
                 token = new JwtSecurityTokenHandler().WriteToken(token),
                 expiration = token.ValidTo
             } );
-            //var tokenHandler = new JwtSecurityTokenHandler();
-            //var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            //var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-            //var role = await _repository.GetAllRoles(user);
-            //
-            //var tokenDescriptor = new SecurityTokenDescriptor
-            //{
-            //    Subject = new ClaimsIdentity(new Claim[]
-            //    {
-            //        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            //        new Claim(ClaimTypes.Name, user.UserName),
-            //        new Claim(ClaimTypes.Role, role.First())
-            //    }),
-            //    Expires = DateTime.Now.AddDays(1),
-            //    SigningCredentials = signinCredentials
-            //};
-            //var token = tokenHandler.CreateToken(tokenDescriptor);
-            //var tokenString = tokenHandler.WriteToken(token);
-            //return Ok(new { tokenString });
         }
         private IActionResult GetErrorResult(IdentityResult result)
         {

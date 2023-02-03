@@ -2,12 +2,14 @@
 using Contracts;
 using Entities.DataTransferObject;
 using Entities.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Project315.Controllers
 {
     [Route("api/pedido")]
     [ApiController]
+    [Authorize]
     public class PedidoController : ControllerBase
     {
         private IRepositoryWrapper _repository;

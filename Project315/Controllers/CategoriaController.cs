@@ -11,6 +11,7 @@ namespace Project315.Controllers
 {
     [Route("api/categoria")]
     [ApiController]
+    [Authorize]
     public class CategoriaController : ControllerBase
     {
         private IRepositoryWrapper _repository;
@@ -67,7 +68,6 @@ namespace Project315.Controllers
             }
         }
         [HttpPost]
-        [Authorize]
         public IActionResult CreateCategoria([FromBody] CategoriaForCreationDTO categoria)
         {
             try

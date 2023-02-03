@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.DataTransferObject;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,7 @@ namespace Project315.Controllers
 {
     [Route("api/shoppycar")]
     [ApiController]
+    [Authorize]
     public class ShoppyCarController : ControllerBase
     {
         private IRepositoryWrapper _repository;

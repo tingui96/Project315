@@ -2,6 +2,7 @@
 using Contracts;
 using Entities.DataTransferObject;
 using Entities.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,7 @@ namespace Project315.Controllers
 {
     [Route("api/producto")]
     [ApiController]
+    [Authorize]
     public class ProductoController : ControllerBase
     {
         private IRepositoryWrapper _repository;
