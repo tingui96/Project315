@@ -10,6 +10,7 @@ using Project315.ActionFilters;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Entities.Auth;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace Project315.Extensions
 {
@@ -80,6 +81,20 @@ namespace Project315.Extensions
                     .AddEntityFrameworkStores<RepositoryContext>()
                     .AddDefaultTokenProviders();
             
+        }
+        public static void ConfigureSwagger(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(option =>
+            {
+                option.AddSecurityDefinition("oauth2", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                {
+                    Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
+                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                    Name = "Authorization",
+                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey
+                });
+                option.OperationFilter<SecurityRequirementsOperationFilter>();
+            });
         }
 
         public static void ConfigureValidation(this IServiceCollection services)
