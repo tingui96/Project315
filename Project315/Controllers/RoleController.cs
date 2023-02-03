@@ -24,14 +24,14 @@ namespace Project315.Controllers
         public async Task<IActionResult> GetAll()
         {
             var roles = await _repoWrapper.Role.FindAll();
-            var roleResult = _mapper.Map<RoleDTO>(roles);
             return Ok(roles);
         }
-        [HttpDelete("{rol}")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteRol(string id)
         {
             var roles = await _repoWrapper.Role.GetById(id);
             _repoWrapper.Role.Delete(roles);
+            _repoWrapper.Save();
             return Ok();
         }
     }

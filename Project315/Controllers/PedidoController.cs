@@ -20,11 +20,11 @@ namespace Project315.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        public IActionResult GetAllPedido()
+        public async Task<IActionResult> GetAllPedido()
         {
             try
             {
-                var pedidos = _repository.Pedido.GetAllPedido();
+                var pedidos = await _repository.Pedido.GetAllPedido();
                 _logger.LogInfo($"Returned all pedido from database.");
                 var pedidosResult = _mapper.Map<IEnumerable<PedidoDTO>>(pedidos);
                 return Ok(pedidosResult);
@@ -37,11 +37,11 @@ namespace Project315.Controllers
 
         }
         [HttpGet("{id}", Name = "PedidoById")]
-        public IActionResult GetPedidoById(Guid id)
+        public async Task<IActionResult> GetPedidoById(Guid id)
         {
             try
             {
-                var pedido = _repository.Pedido.GetPedidoById(id);
+                var pedido = await _repository.Pedido.GetPedidoById(id);
 
                 if (pedido is null)
                 {
@@ -95,7 +95,7 @@ namespace Project315.Controllers
             }
         }
         [HttpPut("{id}")]
-        public IActionResult UpdatePedido(Guid id, [FromBody] PedidoForUpdateDTO pedido)
+        public async Task<IActionResult> UpdatePedido(Guid id, [FromBody] PedidoForUpdateDTO pedido)
         {
             try
             {
@@ -111,7 +111,7 @@ namespace Project315.Controllers
                     return BadRequest("Invalid model object");
                 }
 
-                var pedidoEntity = _repository.Pedido.GetPedidoById(id);
+                var pedidoEntity = await _repository.Pedido.GetPedidoById(id);
                 if (pedidoEntity is null)
                 {
                     _logger.LogError($"Pedido with id: {id}, hasn't been found in db.");
@@ -132,11 +132,11 @@ namespace Project315.Controllers
             }
         }
         [HttpDelete("{id}")]
-        public IActionResult DeletePedido(Guid id)
+        public async Task<IActionResult> DeletePedido(Guid id)
         {
             try
             {
-                var pedido = _repository.Pedido.GetPedidoById(id);
+                var pedido = await _repository.Pedido.GetPedidoById(id);
                 if (pedido == null)
                 {
                     _logger.LogError($"Pedido with id: {id}, hasn't been found in db.");
@@ -155,11 +155,11 @@ namespace Project315.Controllers
             }
         }
         [HttpGet("{id}/producto")]
-        public IActionResult GetPedidoWithDetails(Guid id)
+        public async Task<IActionResult> GetPedidoWithDetails(Guid id)
         {
             try
             {
-                var pedido = _repository.Pedido.GetPedidoWithDetails(id);
+                var pedido = await _repository.Pedido.GetPedidoWithDetails(id);
 
                 if (pedido == null)
                 {

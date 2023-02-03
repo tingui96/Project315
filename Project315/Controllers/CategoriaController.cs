@@ -23,11 +23,11 @@ namespace Project315.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllCategoria()
+        public async Task<IActionResult> GetAllCategoria()
         {
             try
             {
-                var categorias = _repository.Categoria.GetAllCategoria();
+                var categorias = await _repository.Categoria.GetAllCategoria();
                 _logger.LogInfo($"Returned all category from database.");
                 var categoriasResult = _mapper.Map<IEnumerable<CategoriaDTO>>(categorias);
                 return Ok(categoriasResult);
@@ -40,11 +40,11 @@ namespace Project315.Controllers
 
         }
         [HttpGet("{id}",Name = "CategoriaById")]
-        public IActionResult GetCategoriaById(Guid id)
+        public async Task<IActionResult> GetCategoriaById(Guid id)
         {
             try
             {
-                var categoria = _repository.Categoria.GetCategoriaById(id);
+                var categoria = await _repository.Categoria.GetCategoriaById(id);
 
                 if (categoria is null)
                 {
@@ -98,7 +98,7 @@ namespace Project315.Controllers
             }
         }
         [HttpPut("{id}")]
-        public IActionResult UpdateCategoria(Guid id, [FromBody] CategoriaForUpdateDTO categoria)
+        public async Task<IActionResult> UpdateCategoria(Guid id, [FromBody] CategoriaForUpdateDTO categoria)
         {
             try
             {
@@ -114,7 +114,7 @@ namespace Project315.Controllers
                     return BadRequest("Invalid model object");
                 }
 
-                var categoriaEntity = _repository.Categoria.GetCategoriaById(id);
+                var categoriaEntity = await _repository.Categoria.GetCategoriaById(id);
                 if (categoriaEntity is null)
                 {
                     _logger.LogError($"Categoria with id: {id}, hasn't been found in db.");
@@ -135,11 +135,11 @@ namespace Project315.Controllers
             }
         }
         [HttpDelete("{id}")]
-        public IActionResult DeleteCategoria(Guid id)
+        public async Task<IActionResult> DeleteCategoria(Guid id)
         {
             try
             {
-                var categoria = _repository.Categoria.GetCategoriaById(id);
+                var categoria = await _repository.Categoria.GetCategoriaById(id);
                 if (categoria == null)
                 {
                     _logger.LogError($"Categoria with id: {id}, hasn't been found in db.");
@@ -158,11 +158,11 @@ namespace Project315.Controllers
             }
         }
         [HttpGet("{id}/producto")]
-        public IActionResult GetCategoriaWithDetails(Guid id)
+        public async Task<IActionResult> GetCategoriaWithDetails(Guid id)
         {
             try
             {
-                var categoria = _repository.Categoria.GetCategoriaWithDetails(id);
+                var categoria = await _repository.Categoria.GetCategoriaWithDetails(id);
 
                 if (categoria == null)
                 {

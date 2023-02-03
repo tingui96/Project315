@@ -22,11 +22,11 @@ namespace Project315.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllProducto()
+        public async Task<IActionResult> GetAllProducto()
         {
             try
             {
-                var productos = _repository.Producto.GetAllProducto();
+                var productos = await _repository.Producto.GetAllProducto();
                 _logger.LogInfo($"Returned all productos from database.");
                 var productosResult = _mapper.Map<IEnumerable<ProductoDTO>>(productos);
                 return Ok(productosResult);
@@ -39,11 +39,11 @@ namespace Project315.Controllers
 
         }
         [HttpGet("{id}",Name = "ProductoById")]
-        public IActionResult GetProductoById(Guid id)
+        public async Task<IActionResult> GetProductoById(Guid id)
         {
             try
             {
-                var producto = _repository.Producto.GetProductoById(id);
+                var producto = await _repository.Producto.GetProductoById(id);
 
                 if (producto is null)
                 {
@@ -97,7 +97,7 @@ namespace Project315.Controllers
             }
         }
         [HttpPut("{id}")]
-        public IActionResult UpdateProducto(Guid id, [FromBody] ProductoForUpdateDTO producto)
+        public async Task<IActionResult> UpdateProducto(Guid id, [FromBody] ProductoForUpdateDTO producto)
         {
             try
             {
@@ -113,7 +113,7 @@ namespace Project315.Controllers
                     return BadRequest("Invalid model object");
                 }
 
-                var productoEntity = _repository.Producto.GetProductoById(id);
+                var productoEntity = await _repository.Producto.GetProductoById(id);
                 if (productoEntity is null)
                 {
                     _logger.LogError($"Producto with id: {id}, hasn't been found in db.");
@@ -134,11 +134,11 @@ namespace Project315.Controllers
             }
         }
         [HttpDelete("{id}")]
-        public IActionResult DeleteProducto(Guid id)
+        public async Task<IActionResult> DeleteProducto(Guid id)
         {
             try
             {
-                var producto = _repository.Producto.GetProductoById(id);
+                var producto = await _repository.Producto.GetProductoById(id);
                 if (producto == null)
                 {
                     _logger.LogError($"Producto with id: {id}, hasn't been found in db.");

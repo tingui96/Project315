@@ -20,11 +20,11 @@ namespace Project315.Controllers
             _mapper = mapper;
         }
         [HttpGet]
-        public IActionResult GetAllShoppyCar()
+        public async Task<IActionResult> GetAllShoppyCar()
         {
             try
             {
-                var shoppyCars = _repository.ShoppyCar.GetAllShoppyCar();
+                var shoppyCars = await _repository.ShoppyCar.GetAllShoppyCar();
                 _logger.LogInfo($"Returned all shoppycar from database.");
                 var shoppyCarsResult = _mapper.Map<IEnumerable<ShoppyCarDTO>>(shoppyCars);
                 return Ok(shoppyCarsResult);
@@ -37,11 +37,11 @@ namespace Project315.Controllers
 
         }
         [HttpGet("{id}", Name = "ShoppyCarById")]
-        public IActionResult GetShoppyCarById(Guid id)
+        public async Task<IActionResult> GetShoppyCarById(Guid id)
         {
             try
             {
-                var shoppyCar = _repository.ShoppyCar.GetShoppyCarById(id);
+                var shoppyCar = await _repository.ShoppyCar.GetShoppyCarById(id);
 
                 if (shoppyCar is null)
                 {
@@ -64,11 +64,11 @@ namespace Project315.Controllers
         }
         
         [HttpDelete("{id}")]
-        public IActionResult DeleteShoppyCar(Guid id)
+        public async Task<IActionResult> DeleteShoppyCar(Guid id)
         {
             try
             {
-                var shoppyCar = _repository.ShoppyCar.GetShoppyCarById(id);
+                var shoppyCar = await _repository.ShoppyCar.GetShoppyCarById(id);
                 if (shoppyCar == null)
                 {
                     _logger.LogError($"ShoppyCar with id: {id}, hasn't been found in db.");
@@ -87,11 +87,11 @@ namespace Project315.Controllers
             }
         }
         [HttpGet("{id}/pedidos")]
-        public IActionResult GetShoppyCarWithDetails(Guid id)
+        public async Task<IActionResult> GetShoppyCarWithDetails(Guid id)
         {
             try
             {
-                var shoppyCar = _repository.ShoppyCar.GetShoppyCarWithDetails(id);
+                var shoppyCar = await _repository.ShoppyCar.GetShoppyCarWithDetails(id);
 
                 if (shoppyCar == null)
                 {
@@ -113,7 +113,7 @@ namespace Project315.Controllers
             }
         }
         [HttpPut("{id}")]
-        public IActionResult UpdateShoppyCar(Guid id, [FromBody] ShoppyCarForUpdateDTO shoppyCar)
+        public async Task<IActionResult> UpdateShoppyCar(Guid id, [FromBody] ShoppyCarForUpdateDTO shoppyCar)
         {
             try
             {
@@ -129,7 +129,7 @@ namespace Project315.Controllers
                     return BadRequest("Invalid model object");
                 }
 
-                var shoppyCarEntity = _repository.ShoppyCar.GetShoppyCarById(id);
+                var shoppyCarEntity = await _repository.ShoppyCar.GetShoppyCarById(id);
                 if (shoppyCarEntity is null)
                 {
                     _logger.LogError($"ShoppyCar with id: {id}, hasn't been found in db.");
