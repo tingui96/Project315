@@ -16,14 +16,20 @@ namespace Project315.Controllers
     {
         private IRepositoryWrapper _repository;
         private IAuthRepository _authRepository;
-        
-        public UserController(IRepositoryWrapper repository,IAuthRepository authRepository)
+
+        public UserController(IRepositoryWrapper repository, IAuthRepository authRepository)
         {
             _repository = repository;
-            _authRepository= authRepository;
+            _authRepository = authRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> GetUsers([FromQuery] string rol)
+        public async Task<IActionResult> GetAll()
+        {
+            var users = await _repository.User.FindAll();
+            return Ok(users);
+        }
+        [HttpGet("{rol}/rol", Name ="GetUsersByRol")]
+        public async Task<IActionResult> GetUsers(string rol)
         {
             IQueryable<User> query;
             if (rol != null)

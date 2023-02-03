@@ -33,7 +33,6 @@ namespace Project315.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var entity = _mapper.Map<User>(model);
             var result = await _repository.Register(model);
             if (!result.Succeeded)
             {

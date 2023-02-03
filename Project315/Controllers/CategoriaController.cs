@@ -2,6 +2,7 @@
 using Contracts;
 using Entities.DataTransferObject;
 using Entities.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Project315.ActionFilters;
@@ -66,6 +67,7 @@ namespace Project315.Controllers
             }
         }
         [HttpPost]
+        [Authorize]
         public IActionResult CreateCategoria([FromBody] CategoriaForCreationDTO categoria)
         {
             try

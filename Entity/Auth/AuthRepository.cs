@@ -58,7 +58,7 @@ namespace Entities.Auth
             
             if (result.Succeeded)
             {                
-                var roleresult = await _userManager.AddToRoleAsync(userDb, "Viewer");
+                var roleresult = await _userManager.AddToRoleAsync(userDb, model.Role);
             }
 
             return result;
