@@ -17,5 +17,7 @@ namespace Entities.Models
         [StringLength(60, ErrorMessage = "El nombre no puede contener mas de 60 caracteres")]
         public string? Name { get; set; }
         public ICollection<Producto>? Productos { get; set; }
+
+        public Guid GetId() { return Id; }
     }
 }

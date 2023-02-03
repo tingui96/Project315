@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Entities.Auth;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ namespace Contracts
         IShoppyCarRepository ShoppyCar { get; }
         IPedidoRepository Pedido { get; }
         IUserRepository User { get; }
+        IRoleRepository Role { get; }
         void Save();
     }
 }

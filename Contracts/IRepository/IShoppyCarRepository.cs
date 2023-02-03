@@ -9,12 +9,12 @@ namespace Contracts
 {
     public interface IShoppyCarRepository:IRepositoryBase<ShoppyCar>
     {
-        IEnumerable<ShoppyCar> GetAllShoppyCar();
-        ShoppyCar GetShoppyCarById(Guid shoppyCarId);
+        Task<IEnumerable<ShoppyCar>> GetAllShoppyCar();
+        Task<ShoppyCar> GetShoppyCarById(Guid shoppyCarId);
         void CreateShoppyCar(ShoppyCar shoppyCar);
         void UpdateShoppyCar(ShoppyCar shoppyCar);
         void DeleteShoppyCar(ShoppyCar shoppyCar);
-        ShoppyCar GetShoppyCarWithDetails(Guid shoppyCarId);
+        Task<ShoppyCar> GetShoppyCarWithDetails(Guid shoppyCarId);
 
 
     }

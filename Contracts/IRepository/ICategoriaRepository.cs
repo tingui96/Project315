@@ -9,11 +9,11 @@ namespace Contracts
 {
     public interface ICategoriaRepository : IRepositoryBase<Categoria>
     {
-        IEnumerable<Categoria> GetAllCategoria();
-        Categoria GetCategoriaById(Guid categoriaId);
+        Task<IEnumerable<Categoria>> GetAllCategoria();
+        Task<Categoria> GetCategoriaById(Guid categoriaId);
         void CreateCategoria(Categoria categoria);
         void UpdateCategoria(Categoria categoria);
         void DeleteCategoria(Categoria categoria);
-        Categoria GetCategoriaWithDetails(Guid categoriaId);
+        Task<Categoria> GetCategoriaWithDetails(Guid categoriaId);
     }
 }

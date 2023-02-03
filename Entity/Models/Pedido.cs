@@ -34,5 +34,6 @@ namespace Entities.Models
         public Guid ShoppyCarId { get; set; }
         public ShoppyCar? ShoppyCar { get; set; }
 
+        public Guid GetId() { return Id; }
     }
 }

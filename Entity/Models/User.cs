@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,18 +11,19 @@ using System.Threading.Tasks;
 namespace Entities.Models
 {
     [Table("user")]
-    public class User :  IEntity
+    public class User : IdentityUser, IEntity
     {
-        [Column("UserId")]
-        public Guid Id { get; set; }
-        [Required, StringLength(20)]
-        public string? Usuario { get; set; }
-        [Required,StringLength(50)]
+        [Required, StringLength(50)]
         public string? Name { get; set; }
-        [Required,StringLength(20)]
-        public string? Password { get; set; }
-        public string? Rol { get; set; }
+        [Required]
+        
+        public bool activo { get; set; }
         public ICollection<ShoppyCar>? ShoppyCars { get; set;}
+
+        public Guid GetId()
+        {
+                return Guid.Parse(Id);
+        }
     }    
 
 }

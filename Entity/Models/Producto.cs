@@ -27,5 +27,9 @@ namespace Entities.Models
         [ForeignKey(nameof(Categoria))]
         public Guid CategoriaId { get; set; }
         public Categoria? categoria { get; set; }
+        public Guid GetId()
+        {            
+                return Id;           
+        }
     }
 }

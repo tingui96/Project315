@@ -5,17 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 using Contracts;
 using Entities;
+using Entities.Auth;
 
 namespace Repository
 {
     public class RepositoryWrapper : IRepositoryWrapper
     {
-        private RepositoryContext _repoContext;
+        private readonly RepositoryContext _repoContext;
         private ICategoriaRepository _categoria;
         private IProductoRepository _producto;
         private IShoppyCarRepository _shoppyCar;
         private IPedidoRepository _pedido;
         private IUserRepository _user;
+        private IRoleRepository _role;
 
         public RepositoryWrapper(RepositoryContext repositoryContext)
         {
@@ -68,6 +70,16 @@ namespace Repository
                 if (_user == null)
                     _user = new UserRepository(_repoContext);
                 return _user;
+            }
+        }
+
+        public IRoleRepository Role 
+        {
+            get
+            {
+                if(_role == null)
+                    _role = new RoleRepository(_repoContext);
+                return _role;
             }
         }
 

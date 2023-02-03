@@ -8,6 +8,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Project315.ActionFilters;
 using Entities.Models;
+using Microsoft.AspNetCore.Identity;
+using Entities.Auth;
 
 namespace Project315.Extensions
 {
@@ -69,7 +71,17 @@ namespace Project315.Extensions
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]))
                     };
                 });
-        } 
+        }
+
+        public static void ConfigureIdentity(this IServiceCollection services)
+        {
+            services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddIdentity<User, IdentityRole>()
+                    .AddEntityFrameworkStores<RepositoryContext>()
+                    .AddDefaultTokenProviders();
+            
+        }
+
         public static void ConfigureValidation(this IServiceCollection services)
         {
             services.AddScoped<ValidateEntityExistsAttribute<Categoria>>();

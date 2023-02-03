@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities
+namespace Entities.Configurations
 {
-    public interface IEntity
+    public class UserDataConfiguration
     {
-        public Guid GetId();
     }
 }

@@ -1,20 +1,22 @@
-﻿using Entities.Models;
+﻿using Entities.Auth;
+using Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Contracts
 {
-    public interface IUserRepository:IRepositoryBase<User>
+    public interface IUserRepository
     {
-        IEnumerable<User> GetAllUser();
-        User GetUserById(Guid userId);
-        User GetUserByName(string name);
-        void CreateUser(User user);
-        void UpdateUser(User user);
-        void DeleteUser(User user);
-        User GetUserWithDetails(Guid userId);
+        IQueryable<User> UsersQueryable();
+        Task<IEnumerable<User>> FindAll();
+        Task<IQueryable<User>> FindAllInRole(string role);
+        Task<IEnumerable<User>> FindByCondition(Expression<Func<User, bool>> expression);
+        Task<User> GetById(string Id);
+        void Update(User Entity);
+        void Delete(User Entity);
     }
 }

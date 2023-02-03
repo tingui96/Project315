@@ -9,11 +9,11 @@ namespace Contracts
 {
     public interface IPedidoRepository : IRepositoryBase<Pedido>
     {
-        IEnumerable<Pedido> GetAllPedido();
-        Pedido GetPedidoById(Guid pedidoId);
+        Task<IEnumerable<Pedido>> GetAllPedido();
+        Task<Pedido> GetPedidoById(Guid pedidoId);
         void CreatePedido(Pedido pedido);
         void UpdatePedido(Pedido pedido);
         void DeletePedido(Pedido pedido);
-        Pedido GetPedidoWithDetails(Guid pedidoId);
+        Task<Pedido> GetPedidoWithDetails(Guid pedidoId);
     }
 }

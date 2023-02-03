@@ -27,14 +27,16 @@ namespace Repository
             Update(pedido);
         }
 
-        public IEnumerable<Pedido> GetAllPedido()
+        public async Task<IEnumerable<Pedido>> GetAllPedido()
         {
-            return FindAll()
+            var pedido = await FindAll();
+            return pedido
                 .ToList();
         }
-        public Pedido GetPedidoById(Guid pedidoId)
+        public async Task<Pedido> GetPedidoById(Guid pedidoId)
         {
-            return FindByCondition(pedido => pedido.Id.Equals(pedidoId))
+            var pedido = await FindByCondition(pedido => pedido.Id.Equals(pedidoId));
+            return pedido
                     .FirstOrDefault();
         }
 
@@ -42,9 +44,10 @@ namespace Repository
         {
             Delete(pedido);
         }
-        public Pedido GetPedidoWithDetails(Guid pedidoId)
+        public async Task<Pedido> GetPedidoWithDetails(Guid pedidoId)
         {
-            return FindByCondition(pedido => pedido.Id.Equals(pedidoId))
+            var pedido = await FindByCondition(pedido => pedido.Id.Equals(pedidoId));
+            return pedido
                 .Include(ac => ac.Producto)
                 .FirstOrDefault();
         }

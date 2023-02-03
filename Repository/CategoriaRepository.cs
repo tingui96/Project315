@@ -27,25 +27,27 @@ namespace Repository
             Update(categoria);
         }
 
-        public IEnumerable<Categoria> GetAllCategoria()
+        public async Task <IEnumerable<Categoria>> GetAllCategoria()
         {
-            return FindAll()
+            var categorias = await FindAll();
+            return categorias
                 .OrderBy(ow => ow.Name)
                 .ToList();
         }
-        public Categoria GetCategoriaById(Guid categoriaId)
+        public async Task<Categoria> GetCategoriaById(Guid categoriaId)
         {
-            return FindByCondition(categoria => categoria.Id.Equals(categoriaId))
-                    .FirstOrDefault();
+            var categoria = await FindByCondition(categoria => categoria.Id.Equals(categoriaId));
+            return categoria.FirstOrDefault();
         }
 
         public void DeleteCategoria(Categoria categoria)
         {
             Delete(categoria);
         }
-        public Categoria GetCategoriaWithDetails(Guid categoriaId)
+        public async Task<Categoria> GetCategoriaWithDetails(Guid categoriaId)
         {
-            return FindByCondition(categoria => categoria.Id.Equals(categoriaId))
+            var categoria = await FindByCondition(categoria => categoria.Id.Equals(categoriaId));
+            return categoria
                 .Include(ac => ac.Productos)
                 .FirstOrDefault();
         }

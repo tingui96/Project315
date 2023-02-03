@@ -29,7 +29,7 @@ namespace Project315.ActionFilters
                  return;
              }
 
-             var entity = _context.FindByCondition(x => x.Id.Equals(id));
+             var entity = _context.FindByCondition(x => x.GetId().Equals(id));
              if (entity == null)
              {
                  context.Result = new NotFoundResult();

@@ -1,6 +1,7 @@
 ﻿using Entities.Models;
 using Entities.DataTransferObject;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 
 namespace Project315
 {
@@ -24,7 +25,14 @@ namespace Project315
             //ShoppyCar
             CreateMap<ShoppyCar, ShoppyCarDTO>();
             CreateMap<ShoppyCar, ShoppyCarWithDetailDTO>();
-
+            //User
+            CreateMap<User, UserDTO>();
+            CreateMap<User, UserWithShoppyCarDTO>();
+            CreateMap<RegisterModel, User>();
+            CreateMap<IdentityRole,RoleDTO>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.NormalizedName, opt => opt.MapFrom(src => src.NormalizedName));
             
         }
     }

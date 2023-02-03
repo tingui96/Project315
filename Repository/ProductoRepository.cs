@@ -26,22 +26,25 @@ namespace Repository
             Delete(producto);
         }
 
-        public IEnumerable<Producto> GetAllProducto()
+        public async Task<IEnumerable<Producto>> GetAllProducto()
         {
-            return FindAll()
+            var producto = await FindAll();
+            return producto
                 .OrderBy(ow => ow.Name)
                 .ToList();
         }
 
-        public Producto GetProductoById(Guid productoId)
+        public async Task<Producto> GetProductoById(Guid productoId)
         {
-            return FindByCondition(producto => producto.Id.Equals(productoId))
+            var producto = await FindByCondition(producto => producto.Id.Equals(productoId));
+            return producto
                     .FirstOrDefault();
         }
 
-        public IEnumerable<Producto> ProductosByCategoria(Guid categoriaId)
+        public async Task<IEnumerable<Producto>> ProductosByCategoria(Guid categoriaId)
         {
-            return FindByCondition(a => a.CategoriaId.Equals(categoriaId)).ToList();
+            var productos = await FindByCondition(a => a.CategoriaId.Equals(categoriaId));
+            return productos.ToList();
         }
 
         public void UpdateProducto(Producto producto)

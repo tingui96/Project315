@@ -1,59 +1,60 @@
 ﻿using Contracts;
 using Entities;
+using Entities.Auth;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Repository
 {
-    public class UserRepository : RepositoryBase<User>, IUserRepository
+    public class UserRepository : IUserRepository
     {
+        private readonly RepositoryContext _context;
+
         public UserRepository(RepositoryContext repositoryContext)
-            : base(repositoryContext)
         {
-        }
-        public void CreateUser(User user)
-        {
-            Create(user);
+            _context = repositoryContext;
         }
 
-        public void DeleteUser(User user)
+        public void Delete(User user)
         {
-            Delete(user);
+            _context.Entry(user).State = EntityState.Deleted;
+        }
+        public async Task<IEnumerable<User>> FindAll()
+        {
+            return await _context.Users.ToListAsync();
         }
 
-        public IEnumerable<User> GetAllUser()
+        public async Task<User> GetById(string userId)
         {
-            return FindAll()
-                .OrderBy(ow => ow.Name)
-                .ToList();
+            return await _context.Users.FindAsync(userId);
         }
-
-        public User GetUserById(Guid userId)
+        public void Update(User Entity)
         {
-            return FindByCondition(user => user.Id.Equals(userId))
-                    .FirstOrDefault();
+            _context.Entry(Entity).State = EntityState.Modified;
         }
-
-        public User GetUserByName(string name)
+        public async Task<IEnumerable<User>> FindByCondition(Expression<Func<User, bool>> expression)
         {
-            return FindByCondition(user => user.Name.Equals(name)).FirstOrDefault();
+            return await _context.Set<User>().Where(expression).ToListAsync();
         }
-
-        public User GetUserWithDetails(Guid userId)
+        public IQueryable<User> UsersQueryable()
         {
-            return FindByCondition(user => user.Id.Equals(userId))
-                .Include(sc => sc.ShoppyCars)
-                .FirstOrDefault();
+            return _context.Users.AsQueryable();
         }
-
-        public void UpdateUser(User user)
+        public async Task<IQueryable<User>> FindAllInRole(string roleId)
         {
-            Update(user);
+            var userRole = await _context.UserRoles.Where(u => u.RoleId.Equals(roleId)).ToListAsync();
+            var users = from u in this._context.Users
+                        where (from r in this._context.UserRoles
+                               where r.RoleId == roleId
+                               select r.UserId).Contains(u.Id)
+                        select u;
+            return users;
         }
     }
 }

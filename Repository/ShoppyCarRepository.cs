@@ -27,15 +27,17 @@ namespace Repository
             Update(shoppyCar);
         }
 
-        public IEnumerable<ShoppyCar> GetAllShoppyCar()
+        public async Task<IEnumerable<ShoppyCar>> GetAllShoppyCar()
         {
-            return FindAll()
+            var shoppycar = await FindAll();
+            return shoppycar
                 .OrderBy(ow => ow.Created)
                 .ToList();
         }
-        public ShoppyCar GetShoppyCarById(Guid shoppyCarId)
+        public async Task<ShoppyCar> GetShoppyCarById(Guid shoppyCarId)
         {
-            return FindByCondition(shoppyCar => shoppyCar.Id.Equals(shoppyCarId))
+            var shoppy = await FindByCondition(shoppyCar => shoppyCar.Id.Equals(shoppyCarId));
+            return shoppy
                     .FirstOrDefault();
         }
 
@@ -43,9 +45,10 @@ namespace Repository
         {
             Delete(shoppyCar);
         }
-        public ShoppyCar GetShoppyCarWithDetails(Guid shoppyCarId)
+        public async Task<ShoppyCar> GetShoppyCarWithDetails(Guid shoppyCarId)
         {
-            return FindByCondition(shoppyCar => shoppyCar.Id.Equals(shoppyCarId))
+            var shoppy = await FindByCondition(shoppyCar => shoppyCar.Id.Equals(shoppyCarId));
+            return shoppy
                 .Include(ac => ac.Pedidos)
                 .FirstOrDefault();
         }

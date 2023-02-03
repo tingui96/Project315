@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities
+namespace Entities.Models
 {
-    public interface IEntity
+    public class Role
     {
-        public Guid GetId();
+        public Guid Id { get; set; }
+        public string? Name { get; set; }
     }
 }

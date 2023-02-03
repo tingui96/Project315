@@ -15,6 +15,7 @@ builder.Services.ConfigureIISIntegration();
 builder.Services.ConfigureLoggerService();
 builder.Services.ConfigureRepositoryWrapper();
 builder.Services.ConfigureMySqlContext(builder.Configuration);
+builder.Services.ConfigureIdentity();
 builder.Services.ConfigureJwt(builder.Configuration);
 //
 builder.Services.AddAutoMapper(typeof(Program));
