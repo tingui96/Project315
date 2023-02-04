@@ -51,5 +51,21 @@ namespace Repository
                 .Include(ac => ac.Producto)
                 .FirstOrDefault();
         }
+
+        public async Task<IEnumerable<Pedido>> GetPedidosByUser(string userId)
+        {
+            var pedidos = await FindByCondition(pedido=>pedido.ShoppyCar.UserId.Equals(userId));
+            return pedidos.ToList();
+        }
+
+        public async Task<bool> IsMyPedido(Guid id, string userId)
+        {
+            var pedido = await FindByCondition(pedido => pedido.Id.Equals(id));
+            var pedidoIdentity = pedido.Include(ac => ac.ShoppyCar).FirstOrDefault();
+            var identity = pedidoIdentity.ShoppyCar.UserId;
+            if (identity != null && identity.Equals(userId))
+                return true;
+            return false;
+        }
     }
 }

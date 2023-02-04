@@ -9,7 +9,7 @@ namespace Project315.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize, Authorize(Roles = "Administrador")]
     public class RolesController : ControllerBase
     {
         private readonly IRepositoryWrapper _repoWrapper;

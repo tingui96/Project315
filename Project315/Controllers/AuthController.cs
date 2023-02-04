@@ -16,7 +16,6 @@ namespace Project315.Controllers
 {
     [Route("api/auth")]
     [ApiController]
-    [Authorize]
     public class AuthController : ControllerBase
     {
         private IAuthRepository _repository;
@@ -28,8 +27,8 @@ namespace Project315.Controllers
             _mapper = mapper;
             _configuration = configuration;
         }
-        [HttpPost("register"),AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        [HttpPost("register/administrador"),Authorize(Roles = "Administrador")]
+        public async Task<IActionResult> RegisterAdministrador([FromBody] RegisterModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -43,8 +42,23 @@ namespace Project315.Controllers
 
             return Ok();
         }
-        
-        [HttpPost("login"),AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterModelUser model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _repository.Register(model);
+            if (!result.Succeeded)
+            {
+                return GetErrorResult(result);
+            }
+
+            return Ok();
+        }
+
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             var user = await _repository.Login(model);
@@ -55,13 +69,6 @@ namespace Project315.Controllers
             return await BuildToken(user);
 
         }
-        
-        [HttpGet("{rol}")]
-        public async Task<IActionResult> GetUserInRole(string rol)
-        {
-            var result = _repository.GetUsersInRole(rol);
-            return Ok(result);
-        }
 
         private async Task<IActionResult> BuildToken(User user)
         {
@@ -70,6 +77,7 @@ namespace Project315.Controllers
             {
                 new Claim(ClaimTypes.Name,user.Name),
                 new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
+                new Claim("id",user.Id),
             };
             foreach (var rol in userRoles)
             {

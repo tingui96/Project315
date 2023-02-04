@@ -66,7 +66,7 @@ namespace Project315.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
-        [HttpPost]
+        [HttpPost, Authorize(Roles = "Administrador")]
         public IActionResult CreateProducto([FromBody] ProductoForCreationDTO producto)
         {
             try
@@ -98,7 +98,7 @@ namespace Project315.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize(Roles = "Administrador")]
         public async Task<IActionResult> UpdateProducto(Guid id, [FromBody] ProductoForUpdateDTO producto)
         {
             try
@@ -135,7 +135,7 @@ namespace Project315.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteProducto(Guid id)
         {
             try

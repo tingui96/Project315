@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,7 +16,9 @@ namespace Contracts
         void UpdateShoppyCar(ShoppyCar shoppyCar);
         void DeleteShoppyCar(ShoppyCar shoppyCar);
         Task<ShoppyCar> GetShoppyCarWithDetails(Guid shoppyCarId);
+        Task<IEnumerable<ShoppyCar>> GetShoppyCarsByUser(string userId);
+        Task<bool> IsMyShoppyCar(Guid id,string userId);
 
-
+        
     }
 }

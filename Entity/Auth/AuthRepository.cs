@@ -1,6 +1,7 @@
 ﻿using Entities.DataTransferObject;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Claims;
 
 namespace Entities.Auth
@@ -63,6 +64,20 @@ namespace Entities.Auth
 
             return result;
         }
+        public async Task<IdentityResult> Register(RegisterModelUser model)
+        {
+            var user = new User() { Name = model.Name, UserName = model.UserName, activo = true };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            var userDb = await _userManager.FindByNameAsync(model.UserName);
+
+            if (result.Succeeded)
+            {
+                var roleresult = await _userManager.AddToRoleAsync(userDb, "Viewer");
+            }
+            return result;
+        }
 
         public async Task<IdentityResult> RemoveRole(string id, string rolname)
         {
@@ -82,5 +97,7 @@ namespace Entities.Auth
             var result = await _userManager.DeleteAsync(user);
             return result;                       
         }
+
+       
     }
 }

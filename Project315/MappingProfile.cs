@@ -24,6 +24,8 @@ namespace Project315
             CreateMap<Pedido,PedidoWithProductDTO>();
             //ShoppyCar
             CreateMap<ShoppyCar, ShoppyCarDTO>();
+            CreateMap<ShoppyCarForCreationDTO, ShoppyCar>();
+            CreateMap<ShoppyCarForUpdateDTO, ShoppyCar>();
             CreateMap<ShoppyCar, ShoppyCarWithDetailDTO>();
             //User
             CreateMap<User, UserDTO>();

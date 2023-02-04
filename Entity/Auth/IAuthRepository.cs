@@ -12,6 +12,7 @@ namespace Entities.Auth
     public interface IAuthRepository
     {
         Task<IdentityResult> Register(RegisterModel model); 
+        Task<IdentityResult> Register(RegisterModelUser model);
         Task<User> Login(LoginModel model);
         Task<IdentityResult> AddRole(IdentityRole role);
         //Task<IdentityResult> ChangePassword(ChangePasswordModel model);

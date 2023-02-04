@@ -13,7 +13,7 @@ namespace Project315.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Administrador")]
     public class UserController : ControllerBase
     {
         private IRepositoryWrapper _repository;

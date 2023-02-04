@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.DataTransferObject;
+using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Project315.Controllers
 {
@@ -22,6 +24,15 @@ namespace Project315.Controllers
             _mapper = mapper;
         }
         [HttpGet]
+        public async Task<IActionResult> GetAllShoppyCarByUser()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var userId = identity.Claims.FirstOrDefault(x => x.Type == "id").Value;
+            var shoppyCars = await _repository.ShoppyCar.GetShoppyCarsByUser(userId);
+            var shoppyCarsResult = _mapper.Map<IEnumerable<ShoppyCarDTO>>(shoppyCars);
+            return Ok(shoppyCarsResult);
+        }
+        [HttpGet("Admin"),Authorize(Roles = "Administrador")]
         public async Task<IActionResult> GetAllShoppyCar()
         {
             try
@@ -43,11 +54,18 @@ namespace Project315.Controllers
         {
             try
             {
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                var userId = identity.Claims.FirstOrDefault(x => x.Type == "id").Value;
                 var shoppyCar = await _repository.ShoppyCar.GetShoppyCarById(id);
 
                 if (shoppyCar is null)
                 {
                     _logger.LogError($"shoppyCar with id: {id}, hasn't been found in db.");
+                    return NotFound();
+                }
+                else if (await _repository.ShoppyCar.IsMyShoppyCar(id, userId))
+                {
+                    _logger.LogError($"No puedes modificar este ShoppyCar");
                     return NotFound();
                 }
                 else
@@ -64,19 +82,49 @@ namespace Project315.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
-        
+        [HttpPost]
+        public IActionResult CreateShoppyCar()
+        {
+            try
+            {
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                var userId = identity.Claims.FirstOrDefault(x => x.Type == "id").Value;
+                var shoppycar = new ShoppyCarForCreationDTO();
+                shoppycar.userId = userId;
+
+                var shoppyCarEntity = _mapper.Map<ShoppyCar>(shoppycar);
+
+                _repository.ShoppyCar.CreateShoppyCar(shoppyCarEntity);
+                _repository.Save();
+
+                var createdshoppyCar = _mapper.Map<ShoppyCarDTO>(shoppyCarEntity);
+
+                return CreatedAtRoute("ShoppyCarById", new { id = createdshoppyCar.Id }, createdshoppyCar);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Something went wrong inside CreateShoppyCar action: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
+        }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteShoppyCar(Guid id)
         {
             try
             {
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                var userId = identity.Claims.FirstOrDefault(x => x.Type == "id").Value;
                 var shoppyCar = await _repository.ShoppyCar.GetShoppyCarById(id);
                 if (shoppyCar == null)
                 {
                     _logger.LogError($"ShoppyCar with id: {id}, hasn't been found in db.");
                     return NotFound();
                 }
-
+                else if (await _repository.ShoppyCar.IsMyShoppyCar(id, userId))
+                {
+                    _logger.LogError($"No puedes modificar este ShoppyCar");
+                    return NotFound();
+                }
                 _repository.ShoppyCar.DeleteShoppyCar(shoppyCar);
                 _repository.Save();
 
@@ -93,11 +141,18 @@ namespace Project315.Controllers
         {
             try
             {
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                var userId = identity.Claims.FirstOrDefault(x => x.Type == "id").Value;
                 var shoppyCar = await _repository.ShoppyCar.GetShoppyCarWithDetails(id);
 
                 if (shoppyCar == null)
                 {
                     _logger.LogError($"ShoppyCar with id: {id}, hasn't been found in db.");
+                    return NotFound();
+                }
+                else if (await _repository.ShoppyCar.IsMyShoppyCar(id, userId))
+                {
+                    _logger.LogError($"No puedes modificar este ShoppyCar");
                     return NotFound();
                 }
                 else
@@ -119,6 +174,8 @@ namespace Project315.Controllers
         {
             try
             {
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                var userId = identity.Claims.FirstOrDefault(x => x.Type == "id").Value;
                 if (shoppyCar is null)
                 {
                     _logger.LogError("ShoppyCar object sent from client is null.");
@@ -130,7 +187,11 @@ namespace Project315.Controllers
                     _logger.LogError("Invalid shoppyCar object sent from client.");
                     return BadRequest("Invalid model object");
                 }
-
+                else if (await _repository.ShoppyCar.IsMyShoppyCar(id, userId))
+                {
+                    _logger.LogError($"No puedes modificar este ShoppyCar");
+                    return NotFound();
+                }
                 var shoppyCarEntity = await _repository.ShoppyCar.GetShoppyCarById(id);
                 if (shoppyCarEntity is null)
                 {

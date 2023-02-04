@@ -4,6 +4,7 @@ using Entities.DataTransferObject;
 using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Project315.Controllers
 {
@@ -22,6 +23,15 @@ namespace Project315.Controllers
             _mapper = mapper;
         }
         [HttpGet]
+        public async Task<IActionResult> GetAllPedidosByUser()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var userId = identity.Claims.FirstOrDefault(x => x.Type == "id").Value;
+            var pedidos = await _repository.Pedido.GetPedidosByUser(userId);
+            var pedidosResult = _mapper.Map<IEnumerable<PedidoDTO>>(pedidos);
+            return Ok(pedidosResult);
+        }
+        [HttpGet("Admin"),Authorize(Roles = "Administrador")]
         public async Task<IActionResult> GetAllPedido()
         {
             try
@@ -43,6 +53,9 @@ namespace Project315.Controllers
         {
             try
             {
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                var userId = identity.Claims.FirstOrDefault(x => x.Type == "id").Value;
+
                 var pedido = await _repository.Pedido.GetPedidoById(id);
 
                 if (pedido is null)
@@ -50,11 +63,16 @@ namespace Project315.Controllers
                     _logger.LogError($"pedido with id: {id}, hasn't been found in db.");
                     return NotFound();
                 }
+                else if (await _repository.Pedido.IsMyPedido(id, userId))
+                {
+                    _logger.LogError($"No puedes modificar este pedido");
+                    return NotFound();
+                }
                 else
                 {
                     _logger.LogInfo($"Returned pedido with id: {id}");
 
-                    var pedidoResult = _mapper.Map<CategoriaDTO>(pedido);
+                    var pedidoResult = _mapper.Map<PedidoDTO>(pedido);
                     return Ok(pedidoResult);
                 }
             }
@@ -101,18 +119,23 @@ namespace Project315.Controllers
         {
             try
             {
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                var userId = identity.Claims.FirstOrDefault(x => x.Type == "id").Value;
                 if (pedido is null)
                 {
                     _logger.LogError("Pedido object sent from client is null.");
                     return BadRequest("Pedido object is null");
                 }
-
                 if (!ModelState.IsValid)
                 {
                     _logger.LogError("Invalid pedido object sent from client.");
                     return BadRequest("Invalid model object");
                 }
-
+                else if (await _repository.Pedido.IsMyPedido(id, userId))
+                {
+                    _logger.LogError($"No puedes modificar este pedido");
+                    return NotFound();
+                }
                 var pedidoEntity = await _repository.Pedido.GetPedidoById(id);
                 if (pedidoEntity is null)
                 {
@@ -136,6 +159,8 @@ namespace Project315.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePedido(Guid id)
         {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            var userId = identity.Claims.FirstOrDefault(x => x.Type == "id").Value;
             try
             {
                 var pedido = await _repository.Pedido.GetPedidoById(id);
@@ -144,7 +169,11 @@ namespace Project315.Controllers
                     _logger.LogError($"Pedido with id: {id}, hasn't been found in db.");
                     return NotFound();
                 }
-
+                else if (await _repository.Pedido.IsMyPedido(id,userId))
+                {
+                    _logger.LogError($"No puedes modificar este pedido");
+                    return NotFound();
+                }
                 _repository.Pedido.DeletePedido(pedido);
                 _repository.Save();
 

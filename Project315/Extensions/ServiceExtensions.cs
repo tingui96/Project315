@@ -9,6 +9,7 @@ using System.Text;
 using Project315.ActionFilters;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.OpenApi.Models;
 using Entities.Auth;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -86,12 +87,12 @@ namespace Project315.Extensions
         {
             services.AddSwaggerGen(option =>
             {
-                option.AddSecurityDefinition("oauth2", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                option.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
                 {
                     Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
-                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                    In = ParameterLocation.Header,
                     Name = "Authorization",
-                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey
+                    Type = SecuritySchemeType.ApiKey
                 });
                 option.OperationFilter<SecurityRequirementsOperationFilter>();
             });

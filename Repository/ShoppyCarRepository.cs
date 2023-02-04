@@ -52,5 +52,20 @@ namespace Repository
                 .Include(ac => ac.Pedidos)
                 .FirstOrDefault();
         }
+
+        public async Task<IEnumerable<ShoppyCar>> GetShoppyCarsByUser(string userId)
+        {
+            var shoppycars = await FindByCondition(shoppy => shoppy.UserId.Equals(userId));
+            return shoppycars.ToList();
+        }
+
+        public async Task<bool> IsMyShoppyCar(Guid id, string userId)
+        {
+            var shoppy = await FindByCondition(shoppyCar => shoppyCar.Id.Equals(id));
+            var shoppyIdentity = shoppy.Include(ac => ac.User).FirstOrDefault();
+            if(shoppyIdentity.User != null && shoppyIdentity.User.Id.Equals(userId))
+                return true;
+            return false;
+        }
     }
 }

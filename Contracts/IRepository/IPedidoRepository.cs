@@ -15,5 +15,7 @@ namespace Contracts
         void UpdatePedido(Pedido pedido);
         void DeletePedido(Pedido pedido);
         Task<Pedido> GetPedidoWithDetails(Guid pedidoId);
+        Task<IEnumerable<Pedido>> GetPedidosByUser(string userId);
+        Task<bool> IsMyPedido(Guid id, string userId);
     }
 }
