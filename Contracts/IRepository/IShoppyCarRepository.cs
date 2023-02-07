@@ -15,7 +15,6 @@ namespace Contracts
         void CreateShoppyCar(ShoppyCar shoppyCar);
         void UpdateShoppyCar(ShoppyCar shoppyCar);
         void DeleteShoppyCar(ShoppyCar shoppyCar);
-        Task<ShoppyCar> GetShoppyCarWithDetails(Guid shoppyCarId);
         Task<IEnumerable<ShoppyCar>> GetShoppyCarsByUser(string userId);
         Task<bool> IsMyShoppyCar(Guid id,string userId);
 

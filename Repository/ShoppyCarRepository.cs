@@ -31,13 +31,16 @@ namespace Repository
         {
             var shoppycar = await FindAll();
             return shoppycar
+                .Include(ac=>ac.Pedidos)
                 .OrderBy(ow => ow.Created)
                 .ToList();
         }
         public async Task<ShoppyCar> GetShoppyCarById(Guid shoppyCarId)
         {
             var shoppy = await FindByCondition(shoppyCar => shoppyCar.Id.Equals(shoppyCarId));
-            return shoppy
+          
+            return shoppy.Include(ac => ac.Pedidos)
+                .ThenInclude(b => b.Producto)
                     .FirstOrDefault();
         }
 
@@ -45,18 +48,11 @@ namespace Repository
         {
             Delete(shoppyCar);
         }
-        public async Task<ShoppyCar> GetShoppyCarWithDetails(Guid shoppyCarId)
-        {
-            var shoppy = await FindByCondition(shoppyCar => shoppyCar.Id.Equals(shoppyCarId));
-            return shoppy
-                .Include(ac => ac.Pedidos)
-                .FirstOrDefault();
-        }
 
         public async Task<IEnumerable<ShoppyCar>> GetShoppyCarsByUser(string userId)
         {
             var shoppycars = await FindByCondition(shoppy => shoppy.UserId.Equals(userId));
-            return shoppycars.ToList();
+            return shoppycars.Include(ac=>ac.Pedidos).ThenInclude(b=>b.Producto).ToList();
         }
 
         public async Task<bool> IsMyShoppyCar(Guid id, string userId)

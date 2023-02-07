@@ -57,13 +57,12 @@ namespace Project315.Controllers
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
                 var userId = identity.Claims.FirstOrDefault(x => x.Type == "id").Value;
                 var shoppyCar = await _repository.ShoppyCar.GetShoppyCarById(id);
-
                 if (shoppyCar is null)
                 {
                     _logger.LogError($"shoppyCar with id: {id}, hasn't been found in db.");
                     return NotFound();
                 }
-                else if (await _repository.ShoppyCar.IsMyShoppyCar(id, userId))
+                else if (!await _repository.ShoppyCar.IsMyShoppyCar(id, userId))
                 {
                     _logger.LogError($"No puedes modificar este ShoppyCar");
                     return NotFound();
@@ -133,39 +132,6 @@ namespace Project315.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside DeleteShoppyCar action: {ex.Message}");
-                return StatusCode(500, "Internal server error");
-            }
-        }
-        [HttpGet("{id}/pedidos")]
-        public async Task<IActionResult> GetShoppyCarWithDetails(Guid id)
-        {
-            try
-            {
-                var identity = HttpContext.User.Identity as ClaimsIdentity;
-                var userId = identity.Claims.FirstOrDefault(x => x.Type == "id").Value;
-                var shoppyCar = await _repository.ShoppyCar.GetShoppyCarWithDetails(id);
-
-                if (shoppyCar == null)
-                {
-                    _logger.LogError($"ShoppyCar with id: {id}, hasn't been found in db.");
-                    return NotFound();
-                }
-                else if (await _repository.ShoppyCar.IsMyShoppyCar(id, userId))
-                {
-                    _logger.LogError($"No puedes modificar este ShoppyCar");
-                    return NotFound();
-                }
-                else
-                {
-                    _logger.LogInfo($"Returned shoppyCar with details for id: {id}");
-
-                    var shoppyCarResult = _mapper.Map<ShoppyCarWithDetailDTO>(shoppyCar);
-                    return Ok(shoppyCarResult);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside GetShoppyCarWithDetails action: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }

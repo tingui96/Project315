@@ -10,7 +10,6 @@ namespace Contracts
     public interface IProductoRepository : IRepositoryBase<Producto>
     {
         Task<IEnumerable<Producto>> GetAllProducto();
-        Task<IEnumerable<Producto>> ProductosByCategoria(Guid categoriaId);
         Task<Producto> GetProductoById(Guid productoId);
         void CreateProducto(Producto producto);
         void UpdateProducto(Producto producto);

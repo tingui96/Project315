@@ -40,13 +40,6 @@ namespace Repository
             return producto
                     .FirstOrDefault();
         }
-
-        public async Task<IEnumerable<Producto>> ProductosByCategoria(Guid categoriaId)
-        {
-            var productos = await FindByCondition(a => a.CategoriaId.Equals(categoriaId));
-            return productos.ToList();
-        }
-
         public void UpdateProducto(Producto producto)
         {
             Update(producto);

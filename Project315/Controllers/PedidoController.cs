@@ -63,7 +63,7 @@ namespace Project315.Controllers
                     _logger.LogError($"pedido with id: {id}, hasn't been found in db.");
                     return NotFound();
                 }
-                else if (await _repository.Pedido.IsMyPedido(id, userId))
+                else if (!await _repository.Pedido.IsMyPedido(id, userId))
                 {
                     _logger.LogError($"No puedes modificar este pedido");
                     return NotFound();
@@ -83,7 +83,7 @@ namespace Project315.Controllers
             }
         }
         [HttpPost]
-        public IActionResult CreatePedido([FromBody] PedidoForCreationDTO pedido)
+        public async Task<IActionResult> CreatePedido([FromBody] PedidoForCreationDTO pedido)
         {
             try
             {
@@ -98,7 +98,13 @@ namespace Project315.Controllers
                     _logger.LogError("Invalid pedido object sent from client.");
                     return BadRequest("Invalid model object");
                 }
-
+                var producto = await _repository.Producto.GetProductoById(pedido.productoId);
+                if (producto is null)
+                {
+                    _logger.LogError("product object sent from client is null.");
+                    return BadRequest("product object is null");
+                }
+                pedido.producto = producto;
                 var pedidoEntity = _mapper.Map<Pedido>(pedido);
 
                 _repository.Pedido.CreatePedido(pedidoEntity);
@@ -182,32 +188,6 @@ namespace Project315.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Something went wrong inside DeletePedido action: {ex.Message}");
-                return StatusCode(500, "Internal server error");
-            }
-        }
-        [HttpGet("{id}/producto")]
-        public async Task<IActionResult> GetPedidoWithDetails(Guid id)
-        {
-            try
-            {
-                var pedido = await _repository.Pedido.GetPedidoWithDetails(id);
-
-                if (pedido == null)
-                {
-                    _logger.LogError($"Pedido with id: {id}, hasn't been found in db.");
-                    return NotFound();
-                }
-                else
-                {
-                    _logger.LogInfo($"Returned pedido with details for id: {id}");
-
-                    var pedidoResult = _mapper.Map<PedidoWithProductDTO>(pedido);
-                    return Ok(pedidoResult);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong inside GetPedidoWithDetails action: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }

@@ -37,6 +37,7 @@ namespace Repository
         {
             var pedido = await FindByCondition(pedido => pedido.Id.Equals(pedidoId));
             return pedido
+                .Include(ac => ac.Producto)
                     .FirstOrDefault();
         }
 
@@ -44,18 +45,11 @@ namespace Repository
         {
             Delete(pedido);
         }
-        public async Task<Pedido> GetPedidoWithDetails(Guid pedidoId)
-        {
-            var pedido = await FindByCondition(pedido => pedido.Id.Equals(pedidoId));
-            return pedido
-                .Include(ac => ac.Producto)
-                .FirstOrDefault();
-        }
 
         public async Task<IEnumerable<Pedido>> GetPedidosByUser(string userId)
         {
             var pedidos = await FindByCondition(pedido=>pedido.ShoppyCar.UserId.Equals(userId));
-            return pedidos.ToList();
+            return pedidos.Include(ac => ac.Producto).ToList();
         }
 
         public async Task<bool> IsMyPedido(Guid id, string userId)

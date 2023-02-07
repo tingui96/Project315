@@ -11,7 +11,7 @@ namespace Entities.Models
     [Table("shoppycar")]
     public class ShoppyCar:IEntity
     {
-        [Column("ShoppyCarId")]
+        [Column("ShoppyCarId")] 
         public Guid Id { get; set; }
         [Required]
         public DateTime Created { get; set; }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Entities.Models.ShoppyCar;
 
 namespace Entities.DataTransferObject
 {
@@ -10,7 +11,7 @@ namespace Entities.DataTransferObject
     {
         public Guid Id { get; set; }
         public DateTime Created { get; set; }
-        public string? Status { get; set; }
-        public double Total  { get; }
+        public Status Status { get; set; }
+        public double Total  { get; set; }
     }
 }
