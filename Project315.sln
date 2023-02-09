@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoggerService", "LoggerServ
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{74699C48-7340-4E5E-BFF5-12F79B4654E5}"
 EndProject
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "frontend", "frontend\frontend.esproj", "{F616F8D7-4613-49CA-B4C4-D55EB83B5330}"
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "frontend", "frontend\frontend.esproj", "{AC4A764E-8797-40A8-9D86-4380A541C6B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,12 +41,12 @@ Global
 		{74699C48-7340-4E5E-BFF5-12F79B4654E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74699C48-7340-4E5E-BFF5-12F79B4654E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74699C48-7340-4E5E-BFF5-12F79B4654E5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F616F8D7-4613-49CA-B4C4-D55EB83B5330}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F616F8D7-4613-49CA-B4C4-D55EB83B5330}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F616F8D7-4613-49CA-B4C4-D55EB83B5330}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{F616F8D7-4613-49CA-B4C4-D55EB83B5330}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F616F8D7-4613-49CA-B4C4-D55EB83B5330}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F616F8D7-4613-49CA-B4C4-D55EB83B5330}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{AC4A764E-8797-40A8-9D86-4380A541C6B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC4A764E-8797-40A8-9D86-4380A541C6B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC4A764E-8797-40A8-9D86-4380A541C6B6}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{AC4A764E-8797-40A8-9D86-4380A541C6B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC4A764E-8797-40A8-9D86-4380A541C6B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC4A764E-8797-40A8-9D86-4380A541C6B6}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
