@@ -17,49 +17,51 @@ namespace Repository
         {
         }
 
-        public void CreatePedido(Pedido pedido)
+        public async Task<Pedido> CreatePedido(Pedido pedido)
         {
-            Create(pedido);
+            pedido = await Create(pedido);
+            return await Task.FromResult(pedido);
         }
 
-        public void UpdatePedido(Pedido pedido)
+        public async Task<Pedido> UpdatePedido(Pedido pedido)
         {
-            Update(pedido);
+            pedido = await Update(pedido);
+            return await Task.FromResult(pedido);
+
         }
 
         public async Task<IEnumerable<Pedido>> GetAllPedido()
         {
             var pedido = await FindAll();
-            return pedido
-                .ToList();
+            return await Task.FromResult(pedido);                
         }
         public async Task<Pedido> GetPedidoById(Guid pedidoId)
         {
             var pedido = await FindByCondition(pedido => pedido.Id.Equals(pedidoId));
-            return pedido
-                .Include(ac => ac.Producto)
-                    .FirstOrDefault();
+            var pedidoById = pedido.Include(ac => ac.Producto).FirstOrDefault();
+            return await Task.FromResult(pedidoById);
         }
 
-        public void DeletePedido(Pedido pedido)
+        public async Task<bool> DeletePedido(Pedido pedido)
         {
-            Delete(pedido);
+            var deleted = await Delete(pedido);
+            return await Task.FromResult(deleted);
         }
 
         public async Task<IEnumerable<Pedido>> GetPedidosByUser(string userId)
         {
-            var pedidos = await FindByCondition(pedido=>pedido.ShoppyCar.UserId.Equals(userId));
-            return pedidos.Include(ac => ac.Producto).ToList();
+            var pedidos = await FindByCondition(pedido => pedido.ShoppyCar != null && pedido.ShoppyCar.UserId.Equals(userId));
+            return await Task.FromResult(pedidos.Include(ac => ac.Producto));
         }
 
         public async Task<bool> IsMyPedido(Guid id, string userId)
         {
             var pedido = await FindByCondition(pedido => pedido.Id.Equals(id));
             var pedidoIdentity = pedido.Include(ac => ac.ShoppyCar).FirstOrDefault();
-            var identity = pedidoIdentity.ShoppyCar.UserId;
+            var identity = pedidoIdentity?.ShoppyCar?.UserId;
             if (identity != null && identity.Equals(userId))
-                return true;
-            return false;
+                return await Task.FromResult(true);
+            return await Task.FromResult(false);
         }
     }
 }
