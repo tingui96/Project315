@@ -13,16 +13,33 @@ namespace Repository
             RepositoryContext = repositoryContext;
         }
 
-        public async Task<IQueryable<T>> FindAll() => RepositoryContext.Set<T>().AsNoTracking();
+        public async Task<IQueryable<T>> FindAll()
+        {
+            return await Task.FromResult(RepositoryContext.Set<T>().AsNoTracking());
+        }
 
-        public async Task<IQueryable<T>> FindByCondition(Expression<Func<T, bool>> expression) =>
-            RepositoryContext.Set<T>().Where(expression).AsNoTracking();
+        public async Task<IQueryable<T>> FindByCondition(Expression<Func<T, bool>> expression)
+        {
+            return await Task.FromResult(RepositoryContext.Set<T>().Where(expression).AsNoTracking());
+        }
 
-        public void Create(T entity) => RepositoryContext.Set<T>().Add(entity);
+        public async Task<T> Create(T entity)
+        {
+            RepositoryContext.Set<T>().Add(entity);
+            return await Task.FromResult(entity);
+        }
 
-        public void Update(T entity) => RepositoryContext.Set<T>().Update(entity);
+        public async Task<T> Update(T entity)
+        {
+            RepositoryContext.Set<T>().Update(entity);
+            return await Task.FromResult(entity);
+        }
 
-        public void Delete(T entity) => RepositoryContext.Set<T>().Remove(entity);
+        public async Task<bool> Delete(T entity)
+        {
+            RepositoryContext.Set<T>().Remove(entity);
+            return await Task.FromResult(true);
+        }
 
 
     }
