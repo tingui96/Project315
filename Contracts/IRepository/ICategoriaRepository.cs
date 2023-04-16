@@ -11,9 +11,9 @@ namespace Contracts
     {
         Task<IEnumerable<Categoria>> GetAllCategoria();
         Task<Categoria> GetCategoriaById(Guid categoriaId);
-        void CreateCategoria(Categoria categoria);
-        void UpdateCategoria(Categoria categoria);
-        void DeleteCategoria(Categoria categoria);
+        Task<Categoria> CreateCategoria(Categoria categoria);
+        Task<Categoria> UpdateCategoria(Categoria categoria);
+        Task<bool> DeleteCategoria(Categoria categoria);
         Task<Categoria> GetCategoriaWithDetails(Guid categoriaId);
     }
 }

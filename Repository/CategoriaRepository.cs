@@ -17,39 +17,42 @@ namespace Repository
         {
         }
 
-        public void CreateCategoria(Categoria categoria)
+        public async Task<Categoria> CreateCategoria(Categoria categoria)
         {
-            Create(categoria);
+            categoria = await Create(categoria);
+            return await Task.FromResult(categoria);
         }
 
-        public void UpdateCategoria(Categoria categoria)
+        public async Task<Categoria> UpdateCategoria(Categoria categoria)
         {
-            Update(categoria);
+            categoria = await Update(categoria);
+            return await Task.FromResult(categoria);
         }
 
         public async Task <IEnumerable<Categoria>> GetAllCategoria()
         {
             var categorias = await FindAll();
-            return categorias
-                .OrderBy(ow => ow.Name)
-                .ToList();
+            return await Task.FromResult(categorias
+                .OrderBy(ow => ow.Name));
         }
         public async Task<Categoria> GetCategoriaById(Guid categoriaId)
         {
             var categoria = await FindByCondition(categoria => categoria.Id.Equals(categoriaId));
-            return categoria.FirstOrDefault();
+            return await Task.FromResult(categoria.FirstOrDefault());
         }
 
-        public void DeleteCategoria(Categoria categoria)
+        public async Task<bool> DeleteCategoria(Categoria categoria)
         {
-            Delete(categoria);
+            var deleted = await Delete(categoria);
+            return await Task.FromResult(deleted);
         }
         public async Task<Categoria> GetCategoriaWithDetails(Guid categoriaId)
         {
             var categoria = await FindByCondition(categoria => categoria.Id.Equals(categoriaId));
-            return categoria
+            var categoriaDetails = categoria
                 .Include(ac => ac.Productos)
                 .FirstOrDefault();
+            return await Task.FromResult(categoriaDetails);
         }
     }
 }
