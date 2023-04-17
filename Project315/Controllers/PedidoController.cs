@@ -4,6 +4,7 @@ using Entities.DataTransferObject;
 using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Project315.BasicResponses;
 using System.Security.Claims;
 
 namespace Project315.Controllers
@@ -31,7 +32,7 @@ namespace Project315.Controllers
             {
                 var pedidos = await _repository.Pedido.GetPedidosByUser(userId);
                 var pedidosResult = _mapper.Map<IEnumerable<PedidoDTO>>(pedidos);
-                return Ok(pedidosResult);
+                return Ok(new ApiOkResponse(pedidosResult));
             }
             return BadRequest();
         }
@@ -77,7 +78,7 @@ namespace Project315.Controllers
                     _logger.LogInfo($"Returned pedido with id: {id}");
 
                     var pedidoResult = _mapper.Map<PedidoDTO>(pedido);
-                    return Ok(pedidoResult);
+                    return Ok(new ApiOkResponse(pedidoResult));
                 }
             }
             catch (Exception ex)
@@ -155,10 +156,10 @@ namespace Project315.Controllers
 
                 _mapper.Map(pedido, pedidoEntity);
 
-                await _repository.Pedido.UpdatePedido(pedidoEntity);
+                var result = await _repository.Pedido.UpdatePedido(pedidoEntity);
                 await _repository.Save();
 
-                return NoContent();
+                return Ok(new ApiOkResponse(result));
             }
             catch (Exception ex)
             {
@@ -184,10 +185,10 @@ namespace Project315.Controllers
                     _logger.LogError($"No puedes modificar este pedido");
                     return NotFound();
                 }
-                await _repository.Pedido.DeletePedido(pedido);
+                var result = await _repository.Pedido.DeletePedido(pedido);
                 await _repository.Save();
 
-                return NoContent();
+                return Ok(new ApiOkResponse(result));
             }
             catch (Exception ex)
             {

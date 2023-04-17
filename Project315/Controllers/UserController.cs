@@ -3,6 +3,7 @@ using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Project315.BasicResponses;
 
 namespace Project315.Controllers
 {
@@ -21,7 +22,7 @@ namespace Project315.Controllers
         public async Task<IActionResult> GetAll()
         {
             var users = await _repository.User.FindAll();
-            return Ok(users);
+            return Ok(new ApiOkResponse(users));
         }
         [HttpGet("{rol}/rol", Name ="GetUsersByRol")]
         public async Task<IActionResult> GetUsers(string rol)
@@ -41,7 +42,7 @@ namespace Project315.Controllers
             {
                 return BadRequest("Rol no puede ser null");
             }            
-            return Ok(query.ToList());
+            return Ok(new ApiOkResponse(query.ToList()));
         }
 
         [HttpGet("{id}", Name = "UserById")]
@@ -53,7 +54,7 @@ namespace Project315.Controllers
             {
                 return NotFound();
             }
-            return Ok(userById);
+            return Ok(new ApiOkResponse(userById));
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(Guid id)
@@ -69,10 +70,9 @@ namespace Project315.Controllers
             {
                 await _repository.ShoppyCar.Delete(sho);
             }
-            await _repository.User.Delete(user);
+            var result = await _repository.User.Delete(user);
             await _repository.Save();
-
-            return Ok(user);
+            return Ok(new ApiOkResponse(user));
         }
         [HttpPost("authorize/{id}")]
         public async Task<IActionResult> AuthorizeUser(string id)
@@ -84,10 +84,10 @@ namespace Project315.Controllers
                 return NotFound();
             }
             user.Activo = true;
-            await _repository.User.Update(user);
+            var result = await _repository.User.Update(user);
             await _repository.Save();
 
-            return Ok(user);
+            return Ok(new ApiOkResponse(result));
         }
 
         [HttpPost("unauthorize/{id}")]
@@ -102,7 +102,7 @@ namespace Project315.Controllers
             user.Activo = false;
             await _repository.User.Update(user);
             await _repository.Save();
-            return Ok(user);
+            return Ok(new ApiOkResponse(user));
         }
     }
 }

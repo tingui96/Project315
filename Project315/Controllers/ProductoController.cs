@@ -4,6 +4,7 @@ using Entities.DataTransferObject;
 using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Project315.BasicResponses;
 
 namespace Project315.Controllers
 {
@@ -30,7 +31,7 @@ namespace Project315.Controllers
                 var productos = await _repository.Producto.GetAllProducto();
                 _logger.LogInfo($"Returned all productos from database.");
                 var productosResult = _mapper.Map<IEnumerable<ProductoDTO>>(productos);
-                return Ok(productosResult);
+                return Ok(new ApiOkResponse(productosResult));
             }
             catch (Exception ex)
             {
@@ -56,7 +57,7 @@ namespace Project315.Controllers
                     _logger.LogInfo($"Returned producto with id: {id}");
 
                     var productoResult = _mapper.Map<ProductoDTO>(producto);
-                    return Ok(productoResult);
+                    return Ok(new ApiOkResponse(productoResult));
                 }
             }
             catch (Exception ex)
@@ -66,7 +67,7 @@ namespace Project315.Controllers
             }
         }
         [HttpPost, Authorize(Roles = "Administrador")]
-        public IActionResult CreateProducto([FromBody] ProductoForCreationDTO producto)
+        public async Task<IActionResult> CreateProducto([FromBody] ProductoForCreationDTO producto)
         {
             try
             {
@@ -84,8 +85,8 @@ namespace Project315.Controllers
 
                 var productoEntity = _mapper.Map<Producto>(producto);
 
-                _repository.Producto.CreateProducto(productoEntity);
-                _repository.Save();
+                await _repository.Producto.CreateProducto(productoEntity);
+                await _repository.Save();
 
                 var createdproducto = _mapper.Map<ProductoDTO>(productoEntity);
 
@@ -123,10 +124,10 @@ namespace Project315.Controllers
 
                 _mapper.Map(producto, productoEntity);
 
-                await _repository.Producto.UpdateProducto(productoEntity);
+                var result = await _repository.Producto.UpdateProducto(productoEntity);
                 await _repository.Save();
 
-                return NoContent();
+                return Ok(new ApiOkResponse(result));
             }
             catch (Exception ex)
             {
@@ -146,10 +147,10 @@ namespace Project315.Controllers
                     return NotFound();
                 }
 
-                await _repository.Producto.DeleteProducto(producto);
+                var result = await _repository.Producto.DeleteProducto(producto);
                 await _repository.Save();
 
-                return NoContent();
+                return Ok(new ApiOkResponse(result));
             }
             catch (Exception ex)
             {

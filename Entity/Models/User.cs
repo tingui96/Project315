@@ -18,7 +18,7 @@ namespace Entities.Models
         {
                 return Guid.Parse(Id);
         }
-        public User(string name)
+        public User(string name = "")
         {
             Name = name;
         }

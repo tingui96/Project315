@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Project315.BasicResponses;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -35,7 +36,7 @@ namespace Project315.Controllers
                 return GetErrorResult(result);
             }
 
-            return Ok();
+            return Ok(new ApiOkResponse(result));
         }
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModelUser model)
@@ -50,7 +51,7 @@ namespace Project315.Controllers
                 return GetErrorResult(result);
             }
 
-            return Ok();
+            return Ok(new ApiOkResponse(result));
         }
 
         [HttpPost("login")]
@@ -59,9 +60,9 @@ namespace Project315.Controllers
             var user = await _repository.Login(model);
             if (user == null)
                 return BadRequest("Usuario o contraseña invalidos");
+            var result = await BuildToken(user);
 
-
-            return await BuildToken(user);
+            return Ok(new ApiOkResponse(result));
 
         }
 
@@ -79,11 +80,11 @@ namespace Project315.Controllers
                 claim.Add(new Claim(ClaimTypes.Role, rol));
             }
             var token = GetToken(claim);
-            return Ok(
+            return Ok(new ApiOkResponse(
                 new {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo
-            } );
+                        token = new JwtSecurityTokenHandler().WriteToken(token),
+                        expiration = token.ValidTo
+                    } ));
         }
         private IActionResult GetErrorResult(IdentityResult result)
         {
