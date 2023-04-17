@@ -1,13 +1,10 @@
-﻿using AutoMapper;
-using Contracts;
-using Entities.Auth;
+﻿using Entities.Auth;
 using Entities.DataTransferObject;
 using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -18,13 +15,11 @@ namespace Project315.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private IAuthRepository _repository;
-        private IConfiguration _configuration;
-        private IMapper _mapper;
-        public AuthController(IAuthRepository repository, IMapper mapper, IConfiguration configuration)
+        private readonly IAuthRepository _repository;
+        private readonly IConfiguration _configuration;
+        public AuthController(IAuthRepository repository, IConfiguration configuration)
         {
             _repository = repository;
-            _mapper = mapper;
             _configuration = configuration;
         }
         [HttpPost("register/administrador"),Authorize(Roles = "Administrador")]
@@ -119,7 +114,8 @@ namespace Project315.Controllers
         }
         private JwtSecurityToken GetToken(List<Claim> authclaims)
         {
-            var authSign = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var key = _configuration.GetConnectionString("Jwt:Key") ?? string.Empty;
+            var authSign = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],

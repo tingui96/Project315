@@ -1,8 +1,6 @@
 ﻿using Entities.DataTransferObject;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Security.Claims;
 
 namespace Entities.Auth
 {
@@ -18,15 +16,16 @@ namespace Entities.Auth
         }
         public async Task<IdentityResult> AddRole(IdentityRole role)
         {
-            return await _roleManager.CreateAsync(role);
+            var rol = await _roleManager.CreateAsync(role);
+            return await Task.FromResult(rol);
         }
 
         public async Task<IdentityResult> AddRole(string id, string rol)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id) ?? throw new Exception();
             var result = await _userManager.AddToRoleAsync(user, rol);
 
-            return result;
+            return await Task.FromResult(result);
         }
 
         public async Task<IList<string>> GetAllRoles(User user)
@@ -36,66 +35,61 @@ namespace Entities.Auth
 
         public async Task<IEnumerable<User>> GetUsersInRole(string rol)
         {
-             return await _userManager.GetUsersInRoleAsync(rol);
+            var users = await _userManager.GetUsersInRoleAsync(rol);
+            return await Task.FromResult(users);
         }
 
         public async Task<User> Login(LoginModel model)
         {
-            var userToVerify = await _userManager.FindByNameAsync(model.Usuario);
-            if (userToVerify != null && await _userManager.CheckPasswordAsync(userToVerify,model.Password))
-            {
-                return userToVerify;
-            }
-            return null;
+            var userToVerify = await _userManager.FindByNameAsync(model.Usuario) ?? throw new Exception();
+            var check = await _userManager.CheckPasswordAsync(userToVerify,model.Password);
+            if (check) return await Task.FromResult(userToVerify);
+            throw new Exception();
         }
 
         public async Task<IdentityResult> Register(RegisterModel model)
         {
-            var user = new User() { Name=model.Name,UserName = model.UserName, activo = true };
+            var user = new User(model.Name) { UserName = model.UserName, Activo = true };
 
             var result = await _userManager.CreateAsync(user, model.Password);
 
-            var userDb = await _userManager.FindByNameAsync(model.UserName);
-            
-            if (result.Succeeded)
-            {                
-                var roleresult = await _userManager.AddToRoleAsync(userDb, model.Role);
-            }
+            var userDb = await _userManager.FindByNameAsync(model.UserName) ?? throw new Exception();       
+                       
+            await _userManager.AddToRoleAsync(userDb, model.Role);            
 
-            return result;
+            return await Task.FromResult(result);
         }
         public async Task<IdentityResult> Register(RegisterModelUser model)
         {
-            var user = new User() { Name = model.Name, UserName = model.UserName, activo = true };
+            var user = new User(model.Name) { UserName = model.UserName, Activo = true };
 
             var result = await _userManager.CreateAsync(user, model.Password);
 
-            var userDb = await _userManager.FindByNameAsync(model.UserName);
+            var userDb = await _userManager.FindByNameAsync(model.UserName) ?? throw new Exception();
 
-            if (result.Succeeded)
-            {
-                var roleresult = await _userManager.AddToRoleAsync(userDb, "Viewer");
-            }
-            return result;
+            await _userManager.AddToRoleAsync(userDb, "Viewer");
+            
+            return await Task.FromResult(result);
         }
 
         public async Task<IdentityResult> RemoveRole(string id, string rolname)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id) ?? throw new Exception();
             var result = await _userManager.RemoveFromRoleAsync(user, rolname);
 
-            return result;
+            return await Task.FromResult(result);
         }
 
         public async Task<User> UserExists(string Username)
         {
-            return await _userManager.FindByNameAsync(Username);
+            var user = await _userManager.FindByNameAsync(Username);
+            return await Task.FromResult(user);
         }
         public async Task<IdentityResult> DeleteUser(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);            
+            var user = await _userManager.FindByIdAsync(id) ?? throw new Exception();            
             var result = await _userManager.DeleteAsync(user);
-            return result;                       
+            return await Task.FromResult(result);                       
         }
 
        

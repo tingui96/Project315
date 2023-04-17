@@ -3,9 +3,7 @@ using Contracts;
 using Entities.DataTransferObject;
 using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Project315.ActionFilters;
 
 namespace Project315.Controllers
 {
@@ -14,9 +12,9 @@ namespace Project315.Controllers
     [Authorize]
     public class CategoriaController : ControllerBase
     {
-        private IRepositoryWrapper _repository;
-        private ILoggerManager _logger;
-        private IMapper _mapper;
+        private readonly IRepositoryWrapper _repository;
+        private readonly ILoggerManager _logger;
+        private readonly IMapper _mapper;
         public CategoriaController(ILoggerManager logger,IRepositoryWrapper repository, IMapper mapper)
         {
             _repository = repository;
@@ -125,8 +123,8 @@ namespace Project315.Controllers
 
                 _mapper.Map(categoria, categoriaEntity);
 
-                _repository.Categoria.UpdateCategoria(categoriaEntity);
-                _repository.Save();
+                await _repository.Categoria.UpdateCategoria(categoriaEntity);
+                await _repository.Save();
 
                 return NoContent();
             }
@@ -148,8 +146,8 @@ namespace Project315.Controllers
                     return NotFound();
                 }
 
-                _repository.Categoria.DeleteCategoria(categoria);
-                _repository.Save();
+                await _repository.Categoria.DeleteCategoria(categoria);
+                await _repository.Save();
 
                 return NoContent();
             }

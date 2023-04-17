@@ -54,6 +54,7 @@ namespace Project315.Extensions
 
         public static void ConfigureJwt(this IServiceCollection services, IConfiguration config)
         {
+            var key = config.GetConnectionString("Jwt:Key") ?? string.Empty;
             services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -70,7 +71,7 @@ namespace Project315.Extensions
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = config["Jwt:Issuer"],
                         ValidAudience = config["Jwt:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]))
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
                     };
                 });
         }

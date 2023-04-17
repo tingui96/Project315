@@ -1,14 +1,8 @@
 ﻿using Contracts;
 using Entities;
-using Entities.Auth;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository
 {
@@ -21,40 +15,41 @@ namespace Repository
             _context = repositoryContext;
         }
 
-        public void Delete(User user)
+        public async Task<bool> Delete(User user)
         {
             _context.Entry(user).State = EntityState.Deleted;
+            return await Task.FromResult(true);
         }
         public async Task<IEnumerable<User>> FindAll()
         {
-            return await _context.Users.ToListAsync();
+            var users = await _context.Users.ToListAsync();
+            return await Task.FromResult(users);
         }
 
         public async Task<User> GetById(string userId)
         {
-            return await _context.Users.FindAsync(userId);
+            var user = await _context.Users.FindAsync(userId);
+            return await Task.FromResult(user);
         }
-        public void Update(User Entity)
+        public async Task<User> Update(User Entity)
         {
             _context.Entry(Entity).State = EntityState.Modified;
+            return await Task.FromResult(Entity);
         }
         public async Task<IEnumerable<User>> FindByCondition(Expression<Func<User, bool>> expression)
         {
-            return await _context.Set<User>().Where(expression).ToListAsync();
+            var users  = await _context.Set<User>().Where(expression).ToListAsync();
+            return await Task.FromResult(users);
         }
-        public IQueryable<User> UsersQueryable()
+        public async Task<IQueryable<User>> UsersQueryable()
         {
-            return _context.Users.AsQueryable();
+            return await Task.FromResult(_context.Users.AsQueryable());
         }
         public async Task<IQueryable<User>> FindAllInRole(string roleId)
         {
-            var userRole = await _context.UserRoles.Where(u => u.RoleId.Equals(roleId)).ToListAsync();
-            var users = from u in this._context.Users
-                        where (from r in this._context.UserRoles
-                               where r.RoleId == roleId
-                               select r.UserId).Contains(u.Id)
-                        select u;
-            return users;
+            var userRole = await _context.UserRoles.Where(u => u.RoleId.Equals(roleId)).Select(ur => ur.UserId).ToListAsync();
+            var users = _context.Users.Where(u => userRole.Contains(u.Id));                        
+            return await Task.FromResult(users);
         }
     }
 }

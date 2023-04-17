@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Principal;
 using Entities;
 using Repository;
 
@@ -19,9 +18,9 @@ namespace Project315.ActionFilters
          {
              Guid id = Guid.Empty;
 
-             if (context.ActionArguments.ContainsKey("id"))
+             if (context.ActionArguments.TryGetValue("id", out object? value) && value is not null)
              {
-                 id = (Guid)context.ActionArguments["id"];
+                 id = (Guid)value;
              }
              else
              {

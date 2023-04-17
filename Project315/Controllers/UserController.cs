@@ -1,13 +1,8 @@
-﻿using AutoMapper;
-using Contracts;
-using Entities.Auth;
-using Entities.DataTransferObject;
+﻿using Contracts;
 using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Project315.Helpers;
 
 namespace Project315.Controllers
 {
@@ -16,13 +11,11 @@ namespace Project315.Controllers
     [Authorize(Roles = "Administrador")]
     public class UserController : ControllerBase
     {
-        private IRepositoryWrapper _repository;
-        private IAuthRepository _authRepository;
+        private readonly IRepositoryWrapper _repository;
 
-        public UserController(IRepositoryWrapper repository, IAuthRepository authRepository)
+        public UserController(IRepositoryWrapper repository)
         {
             _repository = repository;
-            _authRepository = authRepository;
         }
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -36,13 +29,13 @@ namespace Project315.Controllers
             IQueryable<User> query;
             if (rol != null)
             {
-                var role = await _repository.Role.FindByCondition(r => r.Name.Equals(rol));
+                var role = await _repository.Role.FindByCondition(r => r.Name != null && r.Name.Equals(rol));
                 if (role != null)
                 {
                     query = await _repository.User.FindAllInRole(role.Id);
                 }
                 else
-                    query = _repository.User.UsersQueryable();
+                    query = await _repository.User.UsersQueryable();
             }
             else
             {
@@ -54,12 +47,13 @@ namespace Project315.Controllers
         [HttpGet("{id}", Name = "UserById")]
         public async Task<IActionResult> GetUserById(Guid id)
         {
-            var user = await _repository.User.UsersQueryable().Where(u => u.Id.Equals(id.ToString())).FirstAsync();
-            if (user == null)
+            var user = await _repository.User.UsersQueryable();
+            var userById = user.Where(u => u.Id.Equals(id.ToString())).FirstAsync();
+            if (userById == null)
             {
                 return NotFound();
             }
-            return Ok(user);
+            return Ok(userById);
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(Guid id)
@@ -72,10 +66,11 @@ namespace Project315.Controllers
 
             var shoppycar = await _repository.ShoppyCar.FindByCondition(v => v.UserId.Equals(user.Id));
             foreach (var sho in shoppycar)
-                _repository.ShoppyCar.Delete(sho);
-
-            _repository.User.Delete(user);
-            _repository.Save();
+            {
+                await _repository.ShoppyCar.Delete(sho);
+            }
+            await _repository.User.Delete(user);
+            await _repository.Save();
 
             return Ok(user);
         }
@@ -88,11 +83,9 @@ namespace Project315.Controllers
             {
                 return NotFound();
             }
-
-            user.activo = true;
-
-            _repository.User.Update(user);
-            _repository.Save();
+            user.Activo = true;
+            await _repository.User.Update(user);
+            await _repository.Save();
 
             return Ok(user);
         }
@@ -106,9 +99,9 @@ namespace Project315.Controllers
             {
                 return NotFound();
             }
-            user.activo = false;
-            _repository.User.Update(user);
-            _repository.Save();
+            user.Activo = false;
+            await _repository.User.Update(user);
+            await _repository.Save();
             return Ok(user);
         }
     }

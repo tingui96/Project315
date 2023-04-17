@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Entities.Models
 {
@@ -17,7 +12,7 @@ namespace Entities.Models
         public DateTime Created { get; set; }
         public enum Status { Creado, Pagado }
         public Status Estado { get; set; }
-        public ICollection<Pedido>? Pedidos { get; set; }
+        public ICollection<Pedido> Pedidos { get; set; }
         public double Total
         {
             get
@@ -34,5 +29,11 @@ namespace Entities.Models
         public User? User { get; set; }
 
         public Guid GetId() { return Id; }
+
+        public ShoppyCar(User user,List<Pedido> pedidos)
+        {
+            UserId = user.Id;
+            Pedidos = pedidos ?? new List<Pedido>();
+        }
     }
 }

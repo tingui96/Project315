@@ -13,9 +13,9 @@ namespace Project315.Controllers
     [Authorize]
     public class PedidoController : ControllerBase
     {
-        private IRepositoryWrapper _repository;
-        private ILoggerManager _logger;
-        private IMapper _mapper;
+        private readonly IRepositoryWrapper _repository;
+        private readonly ILoggerManager _logger;
+        private readonly IMapper _mapper;
         public PedidoController(ILoggerManager logger, IRepositoryWrapper repository, IMapper mapper)
         {
             _repository = repository;
@@ -26,10 +26,14 @@ namespace Project315.Controllers
         public async Task<IActionResult> GetAllPedidosByUser()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
-            var userId = identity.Claims.FirstOrDefault(x => x.Type == "id").Value;
-            var pedidos = await _repository.Pedido.GetPedidosByUser(userId);
-            var pedidosResult = _mapper.Map<IEnumerable<PedidoDTO>>(pedidos);
-            return Ok(pedidosResult);
+            var userId = identity?.Claims?.FirstOrDefault(x => x.Type == "id")?.Value;
+            if(userId is not null)
+            {
+                var pedidos = await _repository.Pedido.GetPedidosByUser(userId);
+                var pedidosResult = _mapper.Map<IEnumerable<PedidoDTO>>(pedidos);
+                return Ok(pedidosResult);
+            }
+            return BadRequest();
         }
         [HttpGet("Admin"),Authorize(Roles = "Administrador")]
         public async Task<IActionResult> GetAllPedido()
@@ -54,7 +58,7 @@ namespace Project315.Controllers
             try
             {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
-                var userId = identity.Claims.FirstOrDefault(x => x.Type == "id").Value;
+                var userId = identity?.Claims?.FirstOrDefault(x => x.Type == "id")?.Value;
 
                 var pedido = await _repository.Pedido.GetPedidoById(id);
 
@@ -63,7 +67,7 @@ namespace Project315.Controllers
                     _logger.LogError($"pedido with id: {id}, hasn't been found in db.");
                     return NotFound();
                 }
-                else if (!await _repository.Pedido.IsMyPedido(id, userId))
+                else if (userId is not null && !await _repository.Pedido.IsMyPedido(id, userId))
                 {
                     _logger.LogError($"No puedes modificar este pedido");
                     return NotFound();
@@ -107,8 +111,8 @@ namespace Project315.Controllers
                 pedido.producto = producto;
                 var pedidoEntity = _mapper.Map<Pedido>(pedido);
 
-                _repository.Pedido.CreatePedido(pedidoEntity);
-                _repository.Save();
+                await _repository.Pedido.CreatePedido(pedidoEntity);
+                await _repository.Save();
 
                 var createdpedido = _mapper.Map<PedidoDTO>(pedidoEntity);
 
@@ -126,7 +130,7 @@ namespace Project315.Controllers
             try
             {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
-                var userId = identity.Claims.FirstOrDefault(x => x.Type == "id").Value;
+                var userId = identity?.Claims?.FirstOrDefault(x => x.Type == "id")?.Value;
                 if (pedido is null)
                 {
                     _logger.LogError("Pedido object sent from client is null.");
@@ -137,7 +141,7 @@ namespace Project315.Controllers
                     _logger.LogError("Invalid pedido object sent from client.");
                     return BadRequest("Invalid model object");
                 }
-                else if (await _repository.Pedido.IsMyPedido(id, userId))
+                else if (userId is not null && await _repository.Pedido.IsMyPedido(id, userId))
                 {
                     _logger.LogError($"No puedes modificar este pedido");
                     return NotFound();
@@ -151,8 +155,8 @@ namespace Project315.Controllers
 
                 _mapper.Map(pedido, pedidoEntity);
 
-                _repository.Pedido.UpdatePedido(pedidoEntity);
-                _repository.Save();
+                await _repository.Pedido.UpdatePedido(pedidoEntity);
+                await _repository.Save();
 
                 return NoContent();
             }
@@ -166,7 +170,7 @@ namespace Project315.Controllers
         public async Task<IActionResult> DeletePedido(Guid id)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
-            var userId = identity.Claims.FirstOrDefault(x => x.Type == "id").Value;
+            var userId = identity?.Claims?.FirstOrDefault(x => x.Type == "id")?.Value;
             try
             {
                 var pedido = await _repository.Pedido.GetPedidoById(id);
@@ -175,13 +179,13 @@ namespace Project315.Controllers
                     _logger.LogError($"Pedido with id: {id}, hasn't been found in db.");
                     return NotFound();
                 }
-                else if (await _repository.Pedido.IsMyPedido(id,userId))
+                else if (userId is not null && await _repository.Pedido.IsMyPedido(id,userId))
                 {
                     _logger.LogError($"No puedes modificar este pedido");
                     return NotFound();
                 }
-                _repository.Pedido.DeletePedido(pedido);
-                _repository.Save();
+                await _repository.Pedido.DeletePedido(pedido);
+                await _repository.Save();
 
                 return NoContent();
             }
