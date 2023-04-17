@@ -4,6 +4,8 @@ using Entities.DataTransferObject;
 using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Project315.BasicResponses;
+using System.Security.Cryptography.Xml;
 
 namespace Project315.Controllers
 {
@@ -30,7 +32,7 @@ namespace Project315.Controllers
                 var categorias = await _repository.Categoria.GetAllCategoria();
                 _logger.LogInfo($"Returned all category from database.");
                 var categoriasResult = _mapper.Map<IEnumerable<CategoriaDTO>>(categorias);
-                return Ok(categoriasResult);
+                return Ok(new ApiOkResponse(categoriasResult));
             }
             catch (Exception ex)
             {
@@ -56,7 +58,7 @@ namespace Project315.Controllers
                     _logger.LogInfo($"Returned categoria with id: {id}");
 
                     var categoriaResult = _mapper.Map<CategoriaDTO>(categoria);
-                    return Ok(categoriaResult);
+                    return Ok(new ApiOkResponse(categoriaResult));
                 }
             }
             catch (Exception ex)
@@ -66,7 +68,7 @@ namespace Project315.Controllers
             }
         }
         [HttpPost,Authorize(Roles = "Administrador")]
-        public IActionResult CreateCategoria([FromBody] CategoriaForCreationDTO categoria)
+        public async Task<IActionResult> CreateCategoria([FromBody] CategoriaForCreationDTO categoria)
         {
             try
             {
@@ -84,8 +86,8 @@ namespace Project315.Controllers
 
                 var categoriaEntity = _mapper.Map<Categoria>(categoria);
 
-                _repository.Categoria.CreateCategoria(categoriaEntity);
-                _repository.Save();
+                var category = await _repository.Categoria.CreateCategoria(categoriaEntity);
+                await _repository.Save();
 
                 var createdcategoria = _mapper.Map<CategoriaDTO>(categoriaEntity);
 
@@ -123,10 +125,10 @@ namespace Project315.Controllers
 
                 _mapper.Map(categoria, categoriaEntity);
 
-                await _repository.Categoria.UpdateCategoria(categoriaEntity);
+                var category =await _repository.Categoria.UpdateCategoria(categoriaEntity);
                 await _repository.Save();
 
-                return NoContent();
+                return Ok(new ApiOkResponse(category));
             }
             catch (Exception ex)
             {
@@ -146,10 +148,10 @@ namespace Project315.Controllers
                     return NotFound();
                 }
 
-                await _repository.Categoria.DeleteCategoria(categoria);
+                var deleted  = await _repository.Categoria.DeleteCategoria(categoria);
                 await _repository.Save();
 
-                return NoContent();
+                return Ok(new ApiOkResponse(deleted));
             }
             catch (Exception ex)
             {
@@ -174,7 +176,7 @@ namespace Project315.Controllers
                     _logger.LogInfo($"Returned categoria with details for id: {id}");
 
                     var categoriaResult = _mapper.Map<CategoriaWithProductDTO>(categoria);
-                    return Ok(categoriaResult);
+                    return Ok(new ApiOkResponse(categoriaResult));
                 }
             }
             catch (Exception ex)

@@ -4,6 +4,7 @@ using Entities.DataTransferObject;
 using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Project315.BasicResponses;
 using System.Security.Claims;
 
 namespace Project315.Controllers
@@ -31,7 +32,7 @@ namespace Project315.Controllers
             {
                 var shoppyCars = await _repository.ShoppyCar.GetShoppyCarsByUser(userId);
                 var shoppyCarsResult = _mapper.Map<IEnumerable<ShoppyCarDTO>>(shoppyCars);
-                return Ok(shoppyCarsResult);
+                return Ok(new ApiOkResponse(shoppyCarsResult));
             }
             return BadRequest();
         }
@@ -43,7 +44,7 @@ namespace Project315.Controllers
                 var shoppyCars = await _repository.ShoppyCar.GetAllShoppyCar();
                 _logger.LogInfo($"Returned all shoppycar from database.");
                 var shoppyCarsResult = _mapper.Map<IEnumerable<ShoppyCarDTO>>(shoppyCars);
-                return Ok(shoppyCarsResult);
+                return Ok(new ApiOkResponse(shoppyCarsResult));
             }
             catch (Exception ex)
             {
@@ -75,7 +76,7 @@ namespace Project315.Controllers
                     _logger.LogInfo($"Returned shoppyCar with id: {id}");
 
                     var shoppyCarResult = _mapper.Map<ShoppyCarDTO>(shoppyCar);
-                    return Ok(shoppyCarResult);
+                    return Ok(new ApiOkResponse(shoppyCarResult));
                 }
             }
             catch (Exception ex)
@@ -128,10 +129,10 @@ namespace Project315.Controllers
                     _logger.LogError($"No puedes modificar este ShoppyCar");
                     return NotFound();
                 }
-                await _repository.ShoppyCar.DeleteShoppyCar(shoppyCar);
+                var result = await _repository.ShoppyCar.DeleteShoppyCar(shoppyCar);
                 await _repository.Save();
 
-                return NoContent();
+                return Ok(new ApiOkResponse(result));
             }
             catch (Exception ex)
             {
@@ -169,10 +170,10 @@ namespace Project315.Controllers
                     return NotFound();
                 }
                 _mapper.Map(shoppyCar, shoppyCarEntity);
-                await _repository.ShoppyCar.UpdateShoppyCar(shoppyCarEntity);
+                var result = await _repository.ShoppyCar.UpdateShoppyCar(shoppyCarEntity);
                 await _repository.Save();
 
-                return NoContent();
+                return Ok(new ApiOkResponse(result));
             }
             catch (Exception ex)
             {

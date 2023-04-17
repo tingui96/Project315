@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Project315.BasicResponses;
 
 namespace Project315.Controllers
 {
@@ -19,15 +20,15 @@ namespace Project315.Controllers
         public async Task<IActionResult> GetAll()
         {
             var roles = await _repoWrapper.Role.FindAll();
-            return Ok(roles);
+            return Ok(new ApiOkResponse(roles));
         }
         [HttpDelete]
         public async Task<IActionResult> DeleteRol(string id)
         {
             var roles = await _repoWrapper.Role.GetById(id);
-            await _repoWrapper.Role.Delete(roles);
+            var result = await _repoWrapper.Role.Delete(roles);
             await _repoWrapper.Save();
-            return Ok();
+            return Ok(new ApiOkResponse(result));
         }
     }
 }
