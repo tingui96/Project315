@@ -1,11 +1,6 @@
 ﻿using Contracts;
 using Entities;
 using Entities.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository
 {
@@ -16,33 +11,34 @@ namespace Repository
         {
         }
 
-        public void CreateProducto(Producto producto)
+        public async Task<Producto> CreateProducto(Producto producto)
         {
-            Create(producto);
+            producto = await Create(producto);
+            return await Task.FromResult(producto);
         }
 
-        public void DeleteProducto(Producto producto)
+        public async Task<bool> DeleteProducto(Producto producto)
         {
-            Delete(producto);
+            var deleted = await Delete(producto);
+            return await Task.FromResult(deleted);
         }
 
         public async Task<IEnumerable<Producto>> GetAllProducto()
         {
             var producto = await FindAll();
-            return producto
-                .OrderBy(ow => ow.Name)
-                .ToList();
+            return await Task.FromResult(producto
+                .OrderBy(ow => ow.Name));
         }
 
         public async Task<Producto> GetProductoById(Guid productoId)
         {
             var producto = await FindByCondition(producto => producto.Id.Equals(productoId));
-            return producto
-                    .FirstOrDefault();
+            return await Task.FromResult(producto.FirstOrDefault());
         }
-        public void UpdateProducto(Producto producto)
+        public async Task<Producto> UpdateProducto(Producto producto)
         {
-            Update(producto);
+            producto = await Update(producto);
+            return await Task.FromResult(producto);
         }
     }
 }

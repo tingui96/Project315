@@ -1,10 +1,6 @@
 using Project315.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using NLog;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Project315.ActionFilters;
-using Entities;
-using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 

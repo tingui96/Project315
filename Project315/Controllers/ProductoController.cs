@@ -3,7 +3,6 @@ using Contracts;
 using Entities.DataTransferObject;
 using Entities.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Project315.Controllers
@@ -13,9 +12,9 @@ namespace Project315.Controllers
     [Authorize]
     public class ProductoController : ControllerBase
     {
-        private IRepositoryWrapper _repository;
-        private ILoggerManager _logger;
-        private IMapper _mapper;
+        private readonly IRepositoryWrapper _repository;
+        private readonly ILoggerManager _logger;
+        private readonly IMapper _mapper;
         public ProductoController(ILoggerManager logger,IRepositoryWrapper repository, IMapper mapper)
         {
             _repository = repository;
@@ -124,8 +123,8 @@ namespace Project315.Controllers
 
                 _mapper.Map(producto, productoEntity);
 
-                _repository.Producto.UpdateProducto(productoEntity);
-                _repository.Save();
+                await _repository.Producto.UpdateProducto(productoEntity);
+                await _repository.Save();
 
                 return NoContent();
             }
@@ -147,8 +146,8 @@ namespace Project315.Controllers
                     return NotFound();
                 }
 
-                _repository.Producto.DeleteProducto(producto);
-                _repository.Save();
+                await _repository.Producto.DeleteProducto(producto);
+                await _repository.Save();
 
                 return NoContent();
             }

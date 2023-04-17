@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using Contracts;
-using Entities.DataTransferObject;
+﻿using Contracts;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Project315.Controllers
@@ -13,13 +10,9 @@ namespace Project315.Controllers
     public class RolesController : ControllerBase
     {
         private readonly IRepositoryWrapper _repoWrapper;
-        private readonly IConfiguration _configuration;
-        private readonly IMapper _mapper;
-        public RolesController(IRepositoryWrapper repoWrapper,IMapper mapper, IConfiguration configuration)
+        public RolesController(IRepositoryWrapper repoWrapper)
         {
             _repoWrapper = repoWrapper;
-            _mapper = mapper;
-            _configuration = configuration;
         }
 
         [HttpGet]
@@ -32,8 +25,8 @@ namespace Project315.Controllers
         public async Task<IActionResult> DeleteRol(string id)
         {
             var roles = await _repoWrapper.Role.GetById(id);
-            _repoWrapper.Role.Delete(roles);
-            _repoWrapper.Save();
+            await _repoWrapper.Role.Delete(roles);
+            await _repoWrapper.Save();
             return Ok();
         }
     }

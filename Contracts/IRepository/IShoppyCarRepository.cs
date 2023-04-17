@@ -1,10 +1,4 @@
 ﻿using Entities.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Contracts
 {
@@ -12,9 +6,9 @@ namespace Contracts
     {
         Task<IEnumerable<ShoppyCar>> GetAllShoppyCar();
         Task<ShoppyCar> GetShoppyCarById(Guid shoppyCarId);
-        void CreateShoppyCar(ShoppyCar shoppyCar);
-        void UpdateShoppyCar(ShoppyCar shoppyCar);
-        void DeleteShoppyCar(ShoppyCar shoppyCar);
+        Task<ShoppyCar> CreateShoppyCar(ShoppyCar shoppyCar);
+        Task<ShoppyCar> UpdateShoppyCar(ShoppyCar shoppyCar);
+        Task<bool> DeleteShoppyCar(ShoppyCar shoppyCar);
         Task<IEnumerable<ShoppyCar>> GetShoppyCarsByUser(string userId);
         Task<bool> IsMyShoppyCar(Guid id,string userId);
 

@@ -2,12 +2,7 @@
 using Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository
 {
@@ -20,9 +15,10 @@ namespace Repository
             _context = context;
         }
 
-        public void Create(IdentityRole Entity)
+        public async Task<IdentityRole> Create(IdentityRole Entity)
         {
             _context.Roles.Add(Entity);
+            return await Task.FromResult(Entity);
         }
 
         public async Task<IEnumerable<IdentityRole>> FindAll()
@@ -38,9 +34,10 @@ namespace Repository
         {
             return await _context.Set<IdentityRole>().Where(expression).FirstOrDefaultAsync();
         }
-        public async void Delete(IdentityRole rol)
+        public async Task<bool> Delete(IdentityRole rol)
         {
-            _context.Roles.Remove(rol);           
+            _context.Roles.Remove(rol);   
+            return await Task.FromResult(true);
         }
     }
 }

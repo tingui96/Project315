@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Contracts;
+﻿using Contracts;
 using Entities;
-using Entities.Auth;
 
 namespace Repository
 {
     public class RepositoryWrapper : IRepositoryWrapper
     {
         private readonly RepositoryContext _repoContext;
-        private ICategoriaRepository _categoria;
-        private IProductoRepository _producto;
-        private IShoppyCarRepository _shoppyCar;
-        private IPedidoRepository _pedido;
-        private IUserRepository _user;
-        private IRoleRepository _role;
+        private ICategoriaRepository? _categoria;
+        private IProductoRepository? _producto;
+        private IShoppyCarRepository? _shoppyCar;
+        private IPedidoRepository? _pedido;
+        private IUserRepository? _user;
+        private IRoleRepository? _role;
 
         public RepositoryWrapper(RepositoryContext repositoryContext)
         {
@@ -27,8 +21,7 @@ namespace Repository
         {
             get
             {
-                if (_categoria == null)
-                    _categoria = new CategoriaRepository(_repoContext);
+                _categoria ??= new CategoriaRepository(_repoContext);
                 return _categoria;
             }
         }
@@ -37,8 +30,7 @@ namespace Repository
         {
             get
             {
-                if (_producto == null)
-                    _producto = new ProductoRepository(_repoContext);
+                _producto ??= new ProductoRepository(_repoContext);
                 return _producto;
             }
         }
@@ -47,8 +39,7 @@ namespace Repository
         { 
             get 
             {
-                if(_shoppyCar== null)
-                    _shoppyCar = new ShoppyCarRepository(_repoContext);
+                _shoppyCar ??= new ShoppyCarRepository(_repoContext);
                 return _shoppyCar;
             }
         }
@@ -57,8 +48,7 @@ namespace Repository
         {
             get
             {
-                if(_pedido==null)
-                    _pedido = new PedidoRepository(_repoContext);
+                _pedido ??= new PedidoRepository(_repoContext);
                 return _pedido;
             }
         }
@@ -67,8 +57,7 @@ namespace Repository
         {
             get
             {
-                if (_user == null)
-                    _user = new UserRepository(_repoContext);
+                _user ??= new UserRepository(_repoContext);
                 return _user;
             }
         }
@@ -77,15 +66,15 @@ namespace Repository
         {
             get
             {
-                if(_role == null)
-                    _role = new RoleRepository(_repoContext);
+                _role ??= new RoleRepository(_repoContext);
                 return _role;
             }
         }
 
-        public void Save()
+        public async Task Save()
         {
             _repoContext.SaveChanges();
+            await Task.CompletedTask;
         }
     }
 }

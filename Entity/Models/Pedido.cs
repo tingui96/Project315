@@ -10,7 +10,7 @@ namespace Entities.Models
         public Guid Id { get; set; }
         [Required(ErrorMessage = "Defina la cantidad")]
         [Range(1,ulong.MaxValue)]
-        public ulong cantidad { get; set; }
+        public ulong Cantidad { get; set; }
 
         public double Total
         {
@@ -18,7 +18,7 @@ namespace Entities.Models
                 if (Producto == null)
                     return 0;
                 else                   
-                    return Producto.Price * cantidad;
+                    return Producto.Price * Cantidad;
             }
         }
         [ForeignKey(nameof(Producto))]
